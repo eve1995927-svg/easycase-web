@@ -207,7 +207,25 @@ footer{padding:60px 0 40px}
 .footer-links a:hover{color:var(--violet)}
 .footer-bottom{margin-top:40px;padding-top:24px;border-top:2px solid rgba(99,95,105,.1);text-align:center;font-size:.82rem;color:var(--muted);font-weight:600}
 
-/* ── Reveal animation ── */
+/* ── 產品實際畫面預覽 ── */
+.preview-tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+.preview-tab{background:#fff;border:2.5px solid #EDEAF5;border-radius:20px;padding:12px 22px;font-family:'Noto Sans CJK TC';font-weight:800;font-size:.9rem;color:var(--muted);cursor:pointer;transition:all .25s}
+.preview-tab:hover{border-color:var(--violet-l)}
+.preview-tab.on{background:linear-gradient(155deg,var(--violet-l),var(--violet));color:#fff;border-color:transparent;box-shadow:8px 8px 18px rgba(124,58,237,.28)}
+.browser-frame{background:#fff;border-radius:28px;overflow:hidden;box-shadow:24px 24px 50px rgba(160,150,180,.24),-14px -14px 32px rgba(255,255,255,.9);max-width:960px;margin:0 auto}
+.browser-chrome{background:#EFEBF8;padding:14px 20px;display:flex;align-items:center;gap:16px}
+.browser-dots{display:flex;gap:8px;flex-shrink:0}
+.browser-dots span{width:12px;height:12px;border-radius:50%}
+.browser-dots span:nth-child(1){background:#F87171}
+.browser-dots span:nth-child(2){background:#FBBF24}
+.browser-dots span:nth-child(3){background:#34D399}
+.browser-url{background:#fff;border-radius:12px;padding:8px 18px;font-size:.82rem;font-weight:700;color:var(--muted);flex:1;text-align:center}
+.browser-body{position:relative;background:#0F2237;line-height:0}
+.browser-body img{width:100%;display:block;opacity:0;transition:opacity .35s}
+.browser-body img.on{position:relative;opacity:1}
+.browser-body img:not(.on){position:absolute;top:0;left:0}
+.preview-caption{text-align:center;margin-top:22px;font-weight:700;color:var(--muted);font-size:.95rem}
+.preview-real-badge{display:inline-flex;align-items:center;gap:6px;background:var(--emerald);color:#fff;font-weight:800;font-size:.78rem;padding:5px 14px;border-radius:16px;margin-bottom:16px}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:translateY(0)}
 </style>
@@ -258,6 +276,40 @@ footer{padding:60px 0 40px}
       <div class="demo-row"><span class="l">💰 已收款</span><span class="v ok">NT$120,000</span></div>
       <div class="demo-row"><span class="l">📊 目前毛利</span><span class="v ok">NT$52,000</span></div>
     </div>
+  </div>
+</section>
+
+<!-- PRODUCT PREVIEW -->
+<section class="section" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="preview-real-badge">📸 真的畫面，不是示意圖</span>
+      <h2 class="heading">系統長什麼樣子，你自己點著看</h2>
+      <p>下面每一張都是實際運作中的畫面截圖，點分頁切換不同功能</p>
+    </div>
+
+    <div class="preview-tabs reveal">
+      <button type="button" class="preview-tab on" data-img="p1">📊 今日總覽</button>
+      <button type="button" class="preview-tab" data-img="p2">🗂️ 案場看板</button>
+      <button type="button" class="preview-tab" data-img="p3">💰 案場詳情</button>
+      <button type="button" class="preview-tab" data-img="p4">🏗️ 廠商付款</button>
+      <button type="button" class="preview-tab" data-img="p5">📈 帳款總覽</button>
+    </div>
+
+    <div class="browser-frame reveal">
+      <div class="browser-chrome">
+        <div class="browser-dots"><span></span><span></span><span></span></div>
+        <div class="browser-url">🔒 omnight.netlify.app</div>
+      </div>
+      <div class="browser-body">
+        <img src="preview/1_dashboard.png" id="p1" class="on" alt="今日總覽畫面">
+        <img src="preview/2_kanban.png" id="p2" alt="案場看板畫面">
+        <img src="preview/3_project_detail.png" id="p3" alt="案場詳情畫面">
+        <img src="preview/4_vendor.png" id="p4" alt="廠商付款追蹤畫面">
+        <img src="preview/5_ledger.png" id="p5" alt="帳款總覽畫面">
+      </div>
+    </div>
+    <div class="preview-caption reveal">這是澤居室內裝修實際在用的系統畫面（資料已用示範內容替換）</div>
   </div>
 </section>
 
@@ -564,6 +616,16 @@ document.querySelectorAll('.reveal').forEach((el,i)=>{
 document.querySelectorAll('.faq-item').forEach(it=>{
   it.addEventListener('toggle',()=>{
     if(it.open){document.querySelectorAll('.faq-item').forEach(o=>{if(o!==it)o.open=false;});}
+  });
+});
+
+// 產品畫面預覽分頁切換
+document.querySelectorAll('.preview-tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.preview-tab').forEach(t=>t.classList.remove('on'));
+    tab.classList.add('on');
+    document.querySelectorAll('.browser-body img').forEach(img=>img.classList.remove('on'));
+    document.getElementById(tab.dataset.img).classList.add('on');
   });
 });
 </script>

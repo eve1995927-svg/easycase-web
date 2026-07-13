@@ -27,6 +27,15 @@ const API_URL = {
   production: 'https://core.newebpay.com/MPG/period',
 };
 
+// ⚠️ 安全重點：價格永遠以「後端這份清單」為準，不能直接信任前端表單送來的金額
+// （不然有心人士可以竄改表單，把 NT$3,980 改成 NT$1 送出）。
+// 前端只負責告訴後端「使用者選了哪個方案代號」，實際金額由後端這裡查表決定。
+const PLANS = {
+  light:      { amt: 580,  name: '案場通・入門方案' },
+  full:       { amt: 1280, name: '案場通・全包方案' },
+  enterprise: { amt: 3980, name: '案場通・企業方案' },
+};
+
 function encrypt(plainText, hashKey, hashIV) {
   const cipher = crypto.createCipheriv('aes-256-cbc', hashKey, hashIV);
   let encrypted = cipher.update(plainText, 'utf8', 'hex');
@@ -64,29 +73,33 @@ exports.handler = async (event) => {
     const body = new URLSearchParams(event.body || '');
     const companyName = body.get('companyName') || '';
     const email = body.get('email') || '';
+    const planKey = body.get('plan') || 'full';
     if (!email) {
       return { statusCode: 400, body: JSON.stringify({ error: '請提供 Email' }) };
     }
 
-    const siteUrl = process.env.URL || 'https://ancase.tw';
+    // 查表決定實際金額，不採用前端送來的 amt 欄位（那只是顯示用，不做為收費依據）
+    const plan = PLANS[planKey] || PLANS.full;
+
+    const siteUrl = process.env.URL || 'https://easycase.tw';
     const timestamp = Math.floor(Date.now() / 1000);
     const merOrderNo = 'AC' + timestamp; // 商店訂單編號，限英數字，不可重複
 
-    // 委託單參數（每月扣款 NT$1,280，第一期立即用 10 元授權驗證卡片有效，
+    // 委託單參數（第一期立即用 10 元授權驗證卡片有效，
     // 不是馬上扣整月費用，這是業界標準做法，確認卡片可用後才會照週期正式扣款）
     const params = {
       RespondType: 'JSON',
       TimeStamp: timestamp,
       Version: '1.5',
       MerOrderNo: merOrderNo,
-      ProdDesc: '案場通全功能方案訂閱',
-      PeriodAmt: 1280,
+      ProdDesc: plan.name,
+      PeriodAmt: plan.amt,
       PeriodType: 'M',           // M = 每月
       PeriodPoint: new Date().getDate().toString().padStart(2, '0'), // 每月幾號扣款：用今天的日期
       PeriodStartType: 1,        // 1 = 立即執行10元授權（驗證卡片），不是馬上收整月費用
       PeriodTimes: 999,          // 授權期數上限（信用卡到期會自動停止，不用擔心扣到天荒地老）
       PeriodFirstdate: new Date().toISOString().split('T')[0].replace(/-/g, '/'),
-      PeriodMemo: companyName || '案場通訂閱',
+      PeriodMemo: (companyName || '案場通訂閱') + '｜' + plan.name,
       PayerEmail: email,
       EmailModify: 0,
       ReturnURL: siteUrl + '/signup-success.html',

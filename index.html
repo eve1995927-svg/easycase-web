@@ -222,7 +222,7 @@ footer{padding:60px 0 40px}
 .preview-tab{background:#fff;border:2.5px solid #EDEAF5;border-radius:20px;padding:12px 22px;font-family:'Noto Sans CJK TC';font-weight:800;font-size:.9rem;color:var(--muted);cursor:pointer;transition:all .25s}
 .preview-tab:hover{border-color:var(--violet-l)}
 .preview-tab.on{background:linear-gradient(155deg,var(--violet-l),var(--violet));color:#fff;border-color:transparent;box-shadow:8px 8px 18px rgba(124,58,237,.28)}
-.browser-frame{background:#fff;border-radius:28px;overflow:hidden;box-shadow:24px 24px 50px rgba(160,150,180,.24),-14px -14px 32px rgba(255,255,255,.9);max-width:960px;margin:0 auto}
+.browser-frame{background:#fff;border-radius:28px;overflow:hidden;box-shadow:24px 24px 50px rgba(160,150,180,.24),-14px -14px 32px rgba(255,255,255,.9);max-width:1100px;margin:0 auto}
 .browser-chrome{background:#EFEBF8;padding:14px 20px;display:flex;align-items:center;gap:16px}
 .browser-dots{display:flex;gap:8px;flex-shrink:0}
 .browser-dots span{width:12px;height:12px;border-radius:50%}
@@ -230,12 +230,12 @@ footer{padding:60px 0 40px}
 .browser-dots span:nth-child(2){background:#FBBF24}
 .browser-dots span:nth-child(3){background:#34D399}
 .browser-url{background:#fff;border-radius:12px;padding:8px 18px;font-size:.82rem;font-weight:700;color:var(--muted);flex:1;text-align:center}
-.browser-body{position:relative;background:#0F2237;line-height:0}
-.browser-body img{width:100%;display:block;opacity:0;transition:opacity .35s}
-.browser-body img.on{position:relative;opacity:1}
-.browser-body img:not(.on){position:absolute;top:0;left:0}
+.browser-body{position:relative;background:#0F2237}
 .preview-caption{text-align:center;margin-top:22px;font-weight:700;color:var(--muted);font-size:.95rem}
 .preview-real-badge{display:inline-flex;align-items:center;gap:6px;background:var(--emerald);color:#fff;font-weight:800;font-size:.78rem;padding:5px 14px;border-radius:16px;margin-bottom:16px}
+.ai-highlight{margin-top:22px;max-width:640px;margin-left:auto;margin-right:auto}
+.ai-highlight-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#7C3AED,#EC4899);color:#fff;font-weight:800;font-size:.85rem;padding:8px 18px;border-radius:20px;box-shadow:8px 8px 18px rgba(124,58,237,.25)}
+.ai-highlight-text{margin-top:12px;color:var(--muted);font-size:.92rem;font-weight:600;line-height:1.7}
 
 /* 動畫游標，讓demo看起來像真的有人在操作 */
 .fake-cursor{position:absolute;width:22px;height:22px;pointer-events:none;z-index:20;transition:left 1.1s cubic-bezier(.4,0,.2,1),top 1.1s cubic-bezier(.4,0,.2,1);filter:drop-shadow(0 2px 4px rgba(0,0,0,.35))}
@@ -247,6 +247,97 @@ footer{padding:60px 0 40px}
 .autoplay-badge.hide{opacity:0;pointer-events:none}
 .autoplay-dot{width:7px;height:7px;border-radius:50%;background:var(--emerald-l);animation:pulseDot 1.2s infinite}
 @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── 互動式 DEMO app-shell ── */
+.demo-app{display:flex;min-height:600px;font-family:'Noto Sans CJK TC',sans-serif;position:relative}
+.demo-sidebar{width:172px;flex-shrink:0;background:linear-gradient(180deg,#152238,#0E1930);padding:18px 12px;display:flex;flex-direction:column}
+.demo-logo{display:flex;align-items:center;gap:9px;padding:6px 6px 22px 6px}
+.demo-logo .tile{width:28px;height:28px;border-radius:9px;background:linear-gradient(155deg,#8B5CF6,#7C3AED);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.demo-logo .t{color:#fff;font-weight:900;font-size:14px}
+.demo-nav{display:flex;flex-direction:column;gap:3px}
+.demo-nav-item{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:9px;padding:10px 10px;border-radius:9px;color:#B6C0D6;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s,color .2s}
+.demo-nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.demo-nav-item.on{background:rgba(255,255,255,.1);color:#fff}
+.demo-nav-item.disabled{cursor:pointer;opacity:.55}
+.demo-nav-item .ic{width:16px;text-align:center;font-size:12.5px;flex-shrink:0}
+.demo-sep{height:1px;background:rgba(255,255,255,.08);margin:12px 4px}
+.demo-sb-foot{margin-top:auto;display:flex;align-items:center;gap:9px;padding:9px 6px}
+.demo-sb-foot .av{width:28px;height:28px;border-radius:50%;background:#C8A44A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#1F1500;flex-shrink:0}
+.demo-sb-foot .n{color:#fff;font-size:11px;font-weight:700}
+.demo-sb-foot .p{color:#8291AC;font-size:9.5px;font-weight:600}
+
+.demo-main{flex:1;display:flex;flex-direction:column;min-width:0;background:#F5F6FA}
+.demo-topbar{height:50px;background:#fff;border-bottom:1px solid #ECEAF4;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
+.demo-tb-tabs{display:flex;gap:16px}
+.demo-tb-tabs span{font-size:11px;font-weight:700;color:#8B8698;cursor:pointer}
+.demo-tb-tabs span.on{color:#7C3AED}
+.demo-tb-right{display:flex;align-items:center;gap:12px}
+.demo-bell{width:28px;height:28px;border-radius:50%;background:#F5F3FB;display:flex;align-items:center;justify-content:center;font-size:11px;position:relative;cursor:pointer}
+.demo-bell .dot{position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;background:#EF4444}
+.demo-tb-user{display:flex;align-items:center;gap:6px}
+.demo-tb-user .av{width:24px;height:24px;border-radius:50%;background:#EDE9FE;color:#7C3AED;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px}
+.demo-tb-user .n{font-size:11px;font-weight:700;color:#332F3A}
+
+.demo-content{flex:1;padding:20px 24px;overflow-y:auto;max-height:550px}
+.demo-page{display:none}
+.demo-page.on{display:block;animation:demoFadeIn .35s ease}
+@keyframes demoFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.demo-pg-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px;gap:12px;flex-wrap:wrap}
+.demo-pg-title{font-size:17px;font-weight:900;color:#1F2430}
+.demo-pg-sub{font-size:11px;color:#8B8698;font-weight:600;margin-top:2px}
+.demo-btn-gold{all:unset;box-sizing:border-box;background:linear-gradient(155deg,#D8B968,#B8923C);color:#241A00;font-weight:800;font-size:11px;padding:8px 15px;border-radius:9px;cursor:pointer;transition:transform .15s}
+.demo-btn-gold:hover{transform:translateY(-1px)}
+
+.demo-stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.demo-stat-card{background:#fff;border-radius:13px;padding:13px 15px;box-shadow:0 4px 14px rgba(50,40,90,.06)}
+.demo-stat-card .l{font-size:10px;color:#9691A3;font-weight:700;margin-bottom:6px}
+.demo-stat-card .v{font-size:16px;font-weight:900;color:#1F2430}
+.demo-stat-card .v.green{color:#16A34A}.demo-stat-card .v.amber{color:#B45309}.demo-stat-card .v.violet{color:#7C3AED}
+
+.demo-card{background:#fff;border-radius:15px;padding:17px;box-shadow:0 4px 14px rgba(50,40,90,.06)}
+.demo-card h4{font-size:12px;font-weight:800;margin-bottom:12px;color:#1F2430}
+.demo-table{width:100%;border-collapse:collapse}
+.demo-table th{text-align:left;font-size:9.5px;color:#9691A3;font-weight:700;padding:0 8px 8px 8px;border-bottom:2px solid #F1EFF7}
+.demo-table td{padding:10px 8px;font-size:11.5px;font-weight:600;border-bottom:1px solid #F5F3FA;color:#332F3A}
+.demo-table tr:last-child td{border-bottom:none}
+.demo-table tr{transition:background .15s}
+.demo-table tr[data-page]{cursor:pointer}
+.demo-table tr[data-page]:hover td{background:#FAF9FE}
+.demo-pill{display:inline-block;font-size:9.5px;font-weight:800;padding:3px 9px;border-radius:999px}
+.demo-pill.green{background:#DCFCE7;color:#15803D}
+.demo-pill.amber{background:#FEF3C7;color:#92400E}
+.demo-pill.blue{background:#DBEAFE;color:#1D4ED8}
+.demo-pill.gray{background:#F1EFF7;color:#6B647F}
+.demo-progress{width:60px;height:5px;background:#F1EFF7;border-radius:4px;overflow:hidden;display:inline-block;vertical-align:middle;margin-right:6px}
+.demo-progress i{display:block;height:100%;background:linear-gradient(90deg,#A78BFA,#7C3AED)}
+
+.demo-kanban{display:flex;gap:12px;overflow-x:auto}
+.demo-kcol{flex:1;min-width:150px}
+.demo-kcol-title{font-size:11px;font-weight:800;color:#6B647F;margin-bottom:10px}
+.demo-kcard{background:#fff;border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 3px 10px rgba(50,40,90,.06);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.demo-kcard:hover{transform:translateY(-3px);box-shadow:0 8px 18px rgba(50,40,90,.12)}
+.demo-kcard .n{font-size:11px;font-weight:800;margin-bottom:5px;color:#1F2430}
+.demo-kcard .a{font-size:10px;color:#9691A3;font-weight:700;margin-bottom:7px}
+
+.demo-tabs-row{display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap}
+.demo-tabs-row span{font-size:11px;font-weight:700;color:#9691A3;cursor:pointer;padding-bottom:7px}
+.demo-tabs-row span.on{color:#7C3AED;border-bottom:2px solid #7C3AED;font-weight:800}
+
+.demo-watermark{position:absolute;bottom:12px;right:16px;font-size:9.5px;color:#B3ADC4;font-weight:700;background:rgba(255,255,255,.75);padding:3px 9px;border-radius:8px;z-index:12}
+.demo-toast{position:absolute;left:50%;bottom:20px;transform:translateX(-50%) translateY(20px);background:#1F2430;color:#fff;font-size:12px;font-weight:700;padding:11px 20px;border-radius:12px;box-shadow:0 10px 24px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:all .3s;z-index:30;white-space:nowrap}
+.demo-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:760px){
+  .demo-sidebar{width:56px;padding:14px 8px}
+  .demo-logo .t{display:none}
+  .demo-nav-item span:not(.ic){display:none}
+  .demo-sb-foot .n,.demo-sb-foot .p{display:none}
+  .demo-tb-tabs{display:none}
+  .demo-stat-row{grid-template-columns:1fr 1fr}
+  .demo-kanban{flex-direction:column}
+  .demo-content{max-height:none}
+}
 .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
 .reveal.in{opacity:1;transform:translateY(0)}
 </style>
@@ -263,7 +354,7 @@ footer{padding:60px 0 40px}
 
 <nav>
   <div class="nav-in">
-    <a href="#" class="logo"><span class="logo-tile"><img src="logo/logo_方圓圖示.png" alt="案場通 LOGO"></span>案場通</a>
+    <a href="#" class="logo"><span class="logo-tile"><img src="logo/logo-icon.png" alt="案場通 LOGO"></span>案場通</a>
     <div class="nav-links">
       <a href="#pain">痛點</a>
       <a href="#features">功能</a>
@@ -278,9 +369,9 @@ footer{padding:60px 0 40px}
 <!-- HERO -->
 <section class="hero">
   <div class="wrap hero-in">
-    <div class="hero-badge reveal">✨ 統包裝修專用管理系統</div>
+    <div class="hero-badge reveal">✨ 統包裝修專用管理系統・AI 全流程整合</div>
     <h1 class="heading reveal">案子做完了，<br><span class="grad">錢到底賺多少？</span></h1>
-    <p class="sub reveal">報價、合約、工班付款、帳款，一個案場全部管到底。<br>不用再翻五個 Excel 湊答案。</p>
+    <p class="sub reveal">報價、合約、工班付款、帳款，一個案場全部管到底。<br>AI 幫你辨識報價、回覆客服，數位轉型不用大錢也能做。</p>
     <div class="hero-ctas reveal">
       <a href="signup.html" class="btn btn-primary">免費試用 14 天 →</a>
       <a href="#pricing" class="btn btn-white">看收費方案</a>
@@ -304,9 +395,13 @@ footer{padding:60px 0 40px}
 <section class="section" style="padding-top:20px">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="preview-real-badge">📸 真的畫面，不是示意圖</span>
+      <span class="preview-real-badge">🖥️ 介面示意．操作邏輯與實際系統相同</span>
       <h2 class="heading">系統長什麼樣子，你自己點著看</h2>
-      <p>下面每一張都是實際運作中的畫面截圖，點分頁切換不同功能</p>
+      <p>下面每一張都是系統實際功能的介面示意，點分頁切換不同功能</p>
+      <div class="ai-highlight reveal">
+        <span class="ai-highlight-badge">🤖 AI 全流程整合・市面統包系統少見</span>
+        <p class="ai-highlight-text">報價辨識、客服應答、行銷貼文，AI 從頭到尾幫你做。月費不到一個工人半天工資，中小型統包也能做數位轉型，不用養工程師、不用花大錢建置。</p>
+      </div>
     </div>
 
     <div class="preview-tabs reveal">
@@ -323,19 +418,172 @@ footer{padding:60px 0 40px}
         <div class="browser-url">🔒 app.easycase.tw</div>
       </div>
       <div class="browser-body" id="browserBody">
-        <div class="autoplay-badge" id="autoplayBadge"><span class="autoplay-dot"></span>自動導覽中</div>
-        <img src="preview/1_dashboard.png" id="p1" class="on" alt="今日總覽畫面">
-        <img src="preview/2_kanban.png" id="p2" alt="案場看板畫面">
-        <img src="preview/3_project_detail.png" id="p3" alt="案場詳情畫面">
-        <img src="preview/4_vendor.png" id="p4" alt="廠商付款追蹤畫面">
-        <img src="preview/5_ledger.png" id="p5" alt="帳款總覽畫面">
+        <div class="autoplay-badge" id="autoplayBadge"><span class="autoplay-dot"></span>自動導覽中・點一下自己操作</div>
+
+        <div class="demo-app" id="demoApp">
+          <div class="demo-sidebar">
+            <div class="demo-logo"><span class="tile">🏠</span><span class="t">案場通</span></div>
+            <nav class="demo-nav">
+              <div class="demo-nav-item on" data-page="p1"><span class="ic">📊</span><span>今日總覽</span></div>
+              <div class="demo-nav-item" data-page="p2"><span class="ic">🗂️</span><span>案場看板</span></div>
+              <div class="demo-nav-item" data-page="p3"><span class="ic">📁</span><span>案場詳情</span></div>
+              <div class="demo-nav-item" data-page="p4"><span class="ic">🏗️</span><span>廠商付款</span></div>
+              <div class="demo-nav-item" data-page="p5"><span class="ic">💳</span><span>帳款總覽</span></div>
+              <div class="demo-sep"></div>
+              <div class="demo-nav-item disabled" data-toast="locked"><span class="ic">👥</span><span>人事管理</span></div>
+              <div class="demo-nav-item disabled" data-toast="locked"><span class="ic">⚙️</span><span>系統設定</span></div>
+            </nav>
+            <div class="demo-sb-foot">
+              <div class="av">澤</div>
+              <div><div class="n">澤居室內裝修</div><div class="p">全包方案</div></div>
+            </div>
+          </div>
+
+          <div class="demo-main">
+            <div class="demo-topbar">
+              <div class="demo-tb-tabs">
+                <span class="on" data-page="p1">今日總覽</span><span data-page="p2">案場看板</span><span data-page="p3">案場詳情</span><span data-page="p4">廠商付款</span><span data-page="p5">帳款總覽</span>
+              </div>
+              <div class="demo-tb-right">
+                <div class="demo-bell" data-toast="locked">🔔<span class="dot"></span></div>
+                <div class="demo-tb-user"><span class="av">阿</span><span class="n">阿明</span></div>
+              </div>
+            </div>
+
+            <div class="demo-content" id="demoContent">
+              <!-- 今日總覽 -->
+              <div class="demo-page on" data-page="p1">
+                <div class="demo-pg-head">
+                  <div><div class="demo-pg-title">今日總覽</div><div class="demo-pg-sub">5月14日・星期三</div></div>
+                  <button type="button" class="demo-btn-gold" data-toast="signup">＋ 新增案場</button>
+                </div>
+                <div class="demo-stat-row">
+                  <div class="demo-stat-card"><div class="l">進行中案場</div><div class="v">6</div></div>
+                  <div class="demo-stat-card"><div class="l">待收款</div><div class="v amber">NT$285,000</div></div>
+                  <div class="demo-stat-card"><div class="l">本月毛利</div><div class="v green">NT$182,400</div></div>
+                  <div class="demo-stat-card"><div class="l">待處理任務</div><div class="v violet">3</div></div>
+                </div>
+                <div class="demo-card">
+                  <h4>近期案場（點一列看詳情）</h4>
+                  <table class="demo-table">
+                    <tr><th>案場</th><th>負責人</th><th>進度</th><th>狀態</th></tr>
+                    <tr data-page="p3"><td>林小姐・大安區翻新</td><td>阿明</td><td><span class="demo-progress"><i style="width:70%"></i></span>70%</td><td><span class="demo-pill green">施工中</span></td></tr>
+                    <tr data-page="p3"><td>陳先生・內湖新成屋</td><td>小美</td><td><span class="demo-progress"><i style="width:20%"></i></span>20%</td><td><span class="demo-pill amber">待報價</span></td></tr>
+                    <tr data-page="p3"><td>王小姐・板橋老屋整修</td><td>阿明</td><td><span class="demo-progress"><i style="width:95%"></i></span>95%</td><td><span class="demo-pill blue">驗收中</span></td></tr>
+                    <tr data-page="p3"><td>張先生・三重店面裝修</td><td>小美</td><td><span class="demo-progress"><i style="width:45%"></i></span>45%</td><td><span class="demo-pill green">施工中</span></td></tr>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 案場看板 -->
+              <div class="demo-page" data-page="p2">
+                <div class="demo-pg-head">
+                  <div><div class="demo-pg-title">案場看板</div><div class="demo-pg-sub">點卡片看案場詳情，正式版可直接拖拉切換狀態</div></div>
+                  <button type="button" class="demo-btn-gold" data-toast="signup">＋ 新增案場</button>
+                </div>
+                <div class="demo-kanban">
+                  <div class="demo-kcol"><div class="demo-kcol-title">待報價</div>
+                    <div class="demo-kcard" data-page="p3"><div class="n">陳先生・內湖新成屋</div><div class="a">NT$— ・ 30%</div><span class="demo-progress"><i style="width:30%"></i></span></div>
+                    <div class="demo-kcard" data-page="p3"><div class="n">李小姐・中和套房</div><div class="a">NT$— ・ 10%</div><span class="demo-progress"><i style="width:10%"></i></span></div>
+                  </div>
+                  <div class="demo-kcol"><div class="demo-kcol-title">報價中</div>
+                    <div class="demo-kcard" data-page="p3"><div class="n">張先生・三重店面</div><div class="a">NT$680,000 ・ 15%</div><span class="demo-progress"><i style="width:15%"></i></span></div>
+                  </div>
+                  <div class="demo-kcol"><div class="demo-kcol-title">施工中</div>
+                    <div class="demo-kcard" data-page="p3"><div class="n">林小姐・大安區翻新</div><div class="a">NT$920,000 ・ 70%</div><span class="demo-progress"><i style="width:70%"></i></span></div>
+                    <div class="demo-kcard" data-page="p3"><div class="n">吳先生・新莊透天</div><div class="a">NT$1,450,000 ・ 55%</div><span class="demo-progress"><i style="width:55%"></i></span></div>
+                  </div>
+                  <div class="demo-kcol"><div class="demo-kcol-title">驗收中</div>
+                    <div class="demo-kcard" data-page="p3"><div class="n">王小姐・板橋老屋</div><div class="a">NT$540,000 ・ 95%</div><span class="demo-progress"><i style="width:95%"></i></span></div>
+                  </div>
+                  <div class="demo-kcol"><div class="demo-kcol-title">已完成</div>
+                    <div class="demo-kcard" data-page="p3"><div class="n">黃先生・永和公寓</div><div class="a">NT$610,000 ・ 100%</div><span class="demo-progress"><i style="width:100%"></i></span></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 案場詳情 -->
+              <div class="demo-page" data-page="p3">
+                <div class="demo-pg-head">
+                  <div><div class="demo-pg-title">林小姐・大安區翻新 <span class="demo-pill green" style="margin-left:6px">施工中</span></div><div class="demo-pg-sub">台北市大安區・開工 2026/03/10・預計完工 2026/06/20</div></div>
+                  <button type="button" class="demo-btn-gold" data-toast="signup">＋ 編輯案場</button>
+                </div>
+                <div class="demo-tabs-row">
+                  <span class="on">總覽</span><span data-toast="signup">報價單</span><span data-toast="signup">合約</span><span data-toast="signup">廠商報價</span><span data-toast="signup">收款</span><span data-toast="signup">進度相片</span>
+                </div>
+                <div class="demo-stat-row">
+                  <div class="demo-stat-card"><div class="l">合約金額</div><div class="v">NT$920,000</div></div>
+                  <div class="demo-stat-card"><div class="l">已收款</div><div class="v green">NT$550,000</div></div>
+                  <div class="demo-stat-card"><div class="l">廠商已付</div><div class="v amber">NT$310,000</div></div>
+                  <div class="demo-stat-card"><div class="l">目前毛利</div><div class="v violet">NT$168,000</div></div>
+                </div>
+                <div class="demo-card">
+                  <h4>工程進度</h4>
+                  <table class="demo-table">
+                    <tr><th>項目</th><th>負責廠商</th><th>預計完成</th><th>狀態</th></tr>
+                    <tr><td>拆除工程</td><td>大昌拆除</td><td>03/18</td><td><span class="demo-pill green">已完成</span></td></tr>
+                    <tr><td>水電配置</td><td>阿義水電</td><td>04/05</td><td><span class="demo-pill green">已完成</span></td></tr>
+                    <tr><td>木作工程</td><td>鴻運木作</td><td>05/20</td><td><span class="demo-pill amber">進行中</span></td></tr>
+                    <tr><td>油漆塗裝</td><td>誠信塗裝</td><td>06/10</td><td><span class="demo-pill gray">未開始</span></td></tr>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 廠商付款 -->
+              <div class="demo-page" data-page="p4">
+                <div class="demo-pg-head">
+                  <div><div class="demo-pg-title">廠商付款追蹤</div><div class="demo-pg-sub">共 5 家廠商・本月應付 NT$412,000</div></div>
+                  <button type="button" class="demo-btn-gold" data-toast="signup">＋ 新增付款紀錄</button>
+                </div>
+                <div class="demo-card">
+                  <h4>付款清單</h4>
+                  <table class="demo-table">
+                    <tr><th>廠商名稱</th><th>工程項目</th><th>請款金額</th><th>狀態</th><th>付款日期</th></tr>
+                    <tr><td>鴻運木作</td><td>木作工程・大安區翻新</td><td>NT$185,000</td><td><span class="demo-pill amber">待審核</span></td><td>—</td></tr>
+                    <tr><td>阿義水電</td><td>水電配置・大安區翻新</td><td>NT$96,000</td><td><span class="demo-pill green">已付款</span></td><td>05/06</td></tr>
+                    <tr><td>誠信塗裝</td><td>油漆塗裝・板橋老屋整修</td><td>NT$52,000</td><td><span class="demo-pill blue">已請款</span></td><td>—</td></tr>
+                    <tr><td>大昌拆除</td><td>拆除工程・三重店面裝修</td><td>NT$38,000</td><td><span class="demo-pill green">已付款</span></td><td>04/28</td></tr>
+                    <tr><td>永固磁磚</td><td>磁磚工程・新莊透天</td><td>NT$41,000</td><td><span class="demo-pill amber">待審核</span></td><td>—</td></tr>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 帳款總覽 -->
+              <div class="demo-page" data-page="p5">
+                <div class="demo-pg-head">
+                  <div><div class="demo-pg-title">帳款總覽</div><div class="demo-pg-sub">5月・整體毛利率 32.4%</div></div>
+                  <button type="button" class="demo-btn-gold" data-toast="signup">📊 匯出 Excel</button>
+                </div>
+                <div class="demo-stat-row">
+                  <div class="demo-stat-card"><div class="l">本月收入</div><div class="v">NT$562,000</div></div>
+                  <div class="demo-stat-card"><div class="l">本月支出</div><div class="v amber">NT$379,600</div></div>
+                  <div class="demo-stat-card"><div class="l">本月毛利</div><div class="v green">NT$182,400</div></div>
+                  <div class="demo-stat-card"><div class="l">毛利率</div><div class="v violet">32.4%</div></div>
+                </div>
+                <div class="demo-card">
+                  <h4>案場別損益</h4>
+                  <table class="demo-table">
+                    <tr><th>案場</th><th>已收款</th><th>成本</th><th>毛利</th></tr>
+                    <tr><td>林小姐・大安區翻新</td><td>NT$550,000</td><td>NT$382,000</td><td style="color:#16A34A;font-weight:800">NT$168,000</td></tr>
+                    <tr><td>王小姐・板橋老屋整修</td><td>NT$540,000</td><td>NT$401,000</td><td style="color:#16A34A;font-weight:800">NT$139,000</td></tr>
+                    <tr><td>張先生・三重店面裝修</td><td>NT$280,000</td><td>NT$226,000</td><td style="color:#16A34A;font-weight:800">NT$54,000</td></tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-toast" id="demoToast"></div>
+          <div class="demo-watermark">互動示意．非真實客戶資料</div>
+        </div>
+
         <div class="fake-cursor" id="fakeCursor" style="left:50%;top:50%">
           <svg viewBox="0 0 24 24"><path fill="#fff" stroke="#332F3A" stroke-width="1" d="M5 2l14 8.5-6 1.5 3 6.5-3 1.5-3-6.5-4 4z"/></svg>
           <div class="click-ripple"></div>
         </div>
       </div>
     </div>
-    <div class="preview-caption reveal">這是真實客戶正在使用的系統畫面（資料已用示範內容替換）</div>
+    <div class="preview-caption reveal">畫面配色與版面來自實際系統，內容為示範資料</div>
   </div>
 </section>
 
@@ -626,7 +874,7 @@ footer{padding:60px 0 40px}
   <div class="wrap">
     <div class="footer-in">
       <div class="footer-col reveal">
-        <div class="logo"><span class="logo-tile"><img src="logo/logo_方圓圖示.png" alt="案場通 LOGO"></span>案場通</div>
+        <div class="logo"><span class="logo-tile"><img src="logo/logo-icon.png" alt="案場通 LOGO"></span>案場通</div>
         <div class="social-row">
           <a href="https://instagram.com/easy.casetw" target="_blank" class="social-btn ig" aria-label="Instagram">
             <svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.24 2.22.41.56.21.96.47 1.38.89.42.42.68.82.89 1.38.17.42.36 1.05.41 2.22.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.24 1.8-.41 2.22-.21.56-.47.96-.89 1.38-.42.42-.82.68-1.38.89-.42.17-1.05.36-2.22.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.24-2.22-.41-.56-.21-.96-.47-1.38-.89-.42-.42-.68-.82-.89-1.38-.17-.42-.36-1.05-.41-2.22-.06-1.27-.07-1.65-.07-4.85s.01-3.58.07-4.85c.05-1.17.24-1.8.41-2.22.21-.56.47-.96.89-1.38.42-.42.82-.68 1.38-.89.42-.17 1.05-.36 2.22-.41 1.27-.06 1.65-.07 4.85-.07M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.31-1.46.72-2.13 1.38C1.35 2.68.94 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.31.79.72 1.46 1.38 2.13.67.66 1.34 1.07 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.31 1.46-.72 2.13-1.38.66-.67 1.07-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.31-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.94 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0z"/><path d="M12 5.84A6.16 6.16 0 1 0 18.16 12 6.16 6.16 0 0 0 12 5.84zm0 10.16A4 4 0 1 1 16 12a4 4 0 0 1-4 4z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>
@@ -664,33 +912,53 @@ document.querySelectorAll('.faq-item').forEach(it=>{
   });
 });
 
-// 產品畫面預覽分頁切換 + 自動導覽動畫
+// 產品互動 DEMO：分頁切換 + 自動導覽 + 小互動（點卡片、點鎖定功能會有提示）
 const previewTabs = document.querySelectorAll('.preview-tab');
 const fakeCursor = document.getElementById('fakeCursor');
 const autoplayBadge = document.getElementById('autoplayBadge');
+const demoToast = document.getElementById('demoToast');
 let autoplayActive = true;
 let autoplayIndex = 0;
 let autoplayTimer = null;
+let toastTimer = null;
 
-// 每張畫面對應一個模擬點擊的座標位置（百分比），營造「有人在點」的感覺
-const hotspots = {p1:['30%','24%'], p2:['9%','16%'], p3:['24%','13%'], p4:['35%','21%'], p5:['9%','21%']};
+const pageIds = ['p1','p2','p3','p4','p5'];
 
-function switchPreview(imgId){
-  document.querySelectorAll('.preview-tab').forEach(t=>t.classList.toggle('on', t.dataset.img===imgId));
-  document.querySelectorAll('.browser-body img').forEach(img=>img.classList.toggle('on', img.id===imgId));
-  const [x,y] = hotspots[imgId];
-  fakeCursor.style.left = x;
-  fakeCursor.style.top = y;
+function moveCursorTo(el){
+  if(!el) return;
+  const container = document.getElementById('demoApp').getBoundingClientRect();
+  const rect = el.getBoundingClientRect();
+  const x = rect.left - container.left + rect.width/2;
+  const y = rect.top - container.top + rect.height/2;
+  fakeCursor.style.left = x + 'px';
+  fakeCursor.style.top = y + 'px';
   fakeCursor.classList.add('clicking');
   setTimeout(()=>fakeCursor.classList.remove('clicking'), 500);
 }
 
+function switchPreview(pageId, sourceEl){
+  document.querySelectorAll('.preview-tab').forEach(t=>t.classList.toggle('on', t.dataset.img===pageId));
+  document.querySelectorAll('.demo-nav-item[data-page]').forEach(n=>n.classList.toggle('on', n.dataset.page===pageId));
+  document.querySelectorAll('.demo-tb-tabs span[data-page]').forEach(n=>n.classList.toggle('on', n.dataset.page===pageId));
+  document.querySelectorAll('.demo-page').forEach(p=>p.classList.toggle('on', p.dataset.page===pageId));
+  autoplayIndex = pageIds.indexOf(pageId);
+
+  const targetEl = sourceEl || document.querySelector('.demo-nav-item[data-page="'+pageId+'"]');
+  moveCursorTo(targetEl);
+}
+
+function showToast(msg){
+  clearTimeout(toastTimer);
+  demoToast.textContent = msg;
+  demoToast.classList.add('show');
+  toastTimer = setTimeout(()=>demoToast.classList.remove('show'), 2200);
+}
+
 function autoplayStep(){
   if(!autoplayActive)return;
-  const ids = ['p1','p2','p3','p4','p5'];
-  autoplayIndex = (autoplayIndex+1) % ids.length;
-  switchPreview(ids[autoplayIndex]);
-  autoplayTimer = setTimeout(autoplayStep, 3200);
+  autoplayIndex = (autoplayIndex+1) % pageIds.length;
+  switchPreview(pageIds[autoplayIndex]);
+  autoplayTimer = setTimeout(autoplayStep, 3600);
 }
 
 function stopAutoplay(){
@@ -699,10 +967,35 @@ function stopAutoplay(){
   autoplayBadge.classList.add('hide');
 }
 
+// 上方分頁按鈕
 previewTabs.forEach(tab=>{
   tab.addEventListener('click',()=>{
     stopAutoplay();
     switchPreview(tab.dataset.img);
+  });
+});
+
+// demo 內部：側邊欄／頂部分頁／表格列／看板卡片 點擊切換頁面
+document.querySelectorAll('#demoApp [data-page]').forEach(el=>{
+  el.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    stopAutoplay();
+    switchPreview(el.dataset.page, el);
+  });
+});
+
+// demo 內部：鎖定功能／新增按鈕 顯示提示（導向試用）
+document.querySelectorAll('#demoApp [data-toast]').forEach(el=>{
+  el.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    stopAutoplay();
+    moveCursorTo(el);
+    const type = el.dataset.toast;
+    if(type==='signup'){
+      showToast('這是示意功能・免費試用就能真的操作 →');
+    } else {
+      showToast('完整版才能使用這個功能，快來試用看看 →');
+    }
   });
 });
 
@@ -712,7 +1005,7 @@ const autoplayObserver = new IntersectionObserver((entries)=>{
   entries.forEach(entry=>{
     if(entry.isIntersecting && autoplayActive && !autoplayTimer){
       switchPreview('p1');
-      autoplayTimer = setTimeout(autoplayStep, 3200);
+      autoplayTimer = setTimeout(autoplayStep, 3600);
       autoplayObserver.unobserve(previewSection);
     }
   });

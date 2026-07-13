@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>操作手冊｜案場通</title>
+<meta name="description" content="案場通完整操作手冊，涵蓋所有功能區塊，可搜尋。">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Barlow+Semi+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0F2237;--ink-2:#1B344E;--paper:#F6F4EE;--blueprint:#13355C;
+  --gold:#C8A44A;--gold-d:#9A7830;--gold-l:#E8C870;--gold-pale:#FFFBEE;
+  --steel:#5B6B7A;--steel-l:#94A2AF;--concrete:#E4E0D6;
+  --ok:#2E9E6B;--ok-bg:#EAF7EF;--line:rgba(15,34,55,.12);--w:#fff;
+  --mark:#FFF1A8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow','Noto Sans TC',sans-serif;color:var(--ink);background:var(--paper);line-height:1.65;-webkit-font-smoothing:antialiased}
+.disp{font-family:'Barlow Semi Condensed','Noto Sans TC',sans-serif;font-weight:800;letter-spacing:-.01em;line-height:1.1}
+a{color:inherit}
+mark{background:var(--mark);color:inherit;border-radius:3px;padding:0 2px}
+
+/* ── TOP BAR ── */
+.topbar{position:sticky;top:0;z-index:200;background:var(--ink);color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+.logo{display:flex;align-items:center;gap:9px;font-family:'Barlow Semi Condensed';font-weight:800;font-size:1.1rem;text-decoration:none;color:#fff;flex-shrink:0}
+.logo-mark{width:24px;height:24px;border:2px solid var(--gold);border-radius:4px;position:relative;flex-shrink:0}
+.logo-mark::before{content:"";position:absolute;inset:4px 4px auto 4px;height:2px;background:var(--gold)}
+.logo-mark::after{content:"";position:absolute;inset:auto 4px 4px 4px;height:2px;background:var(--gold);opacity:.5}
+.search-wrap{flex:1;max-width:520px;position:relative}
+.search-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--steel-l);font-size:.95rem;pointer-events:none}
+#searchInput{width:100%;padding:10px 40px 10px 38px;border-radius:9px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;font-size:.92rem;font-family:inherit;outline:none;transition:background .2s,border-color .2s}
+#searchInput::placeholder{color:var(--steel-l)}
+#searchInput:focus{background:rgba(255,255,255,.14);border-color:var(--gold-l)}
+.search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--steel-l);cursor:pointer;font-size:1.1rem;display:none;padding:4px}
+.search-clear.show{display:block}
+.search-count{font-size:.8rem;color:var(--steel-l);flex-shrink:0;white-space:nowrap}
+.topbar-home{color:var(--steel-l);text-decoration:none;font-size:.85rem;flex-shrink:0;white-space:nowrap}
+.topbar-home:hover{color:var(--gold-l)}
+@media(max-width:760px){.topbar-home{display:none}.search-count{display:none}}
+
+/* ── LAYOUT ── */
+.layout{display:grid;grid-template-columns:260px 1fr;max-width:1180px;margin:0 auto;align-items:start}
+.sidebar{position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto;padding:24px 16px 60px;border-right:1px solid var(--line)}
+.sb-cat{margin-bottom:22px}
+.sb-cat-t{font-family:'Barlow Semi Condensed';font-weight:800;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-d);padding:0 10px;margin-bottom:8px}
+.sb-link{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--steel);font-size:.88rem;font-weight:500;transition:background .15s,color .15s}
+.sb-link:hover{background:var(--concrete);color:var(--ink)}
+.sb-link.active{background:var(--gold-pale);color:var(--gold-d);font-weight:700}
+.sb-link .ic{width:18px;text-align:center;flex-shrink:0}
+@media(max-width:900px){.sidebar{display:none}.layout{grid-template-columns:1fr}}
+
+.content{padding:32px 32px 100px;min-width:0}
+.content-head{margin-bottom:36px;padding-bottom:20px;border-bottom:2px solid var(--line)}
+.content-head h1{font-size:2.1rem;margin-bottom:8px}
+.content-head p{color:var(--steel);font-size:1.02rem}
+
+/* ── MODULE BLOCKS ── */
+.module{margin-bottom:52px;scroll-margin-top:70px}
+.module-hd{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.module-ico{width:38px;height:38px;border-radius:9px;background:var(--ink);color:var(--gold-l);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
+.module h2{font-size:1.5rem}
+.module-cat{font-size:.78rem;color:var(--gold-d);font-weight:700;letter-spacing:.06em;margin-bottom:18px;padding-left:50px}
+.module-body{padding-left:50px}
+
+.blk{background:var(--w);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+.blk-t{font-family:'Barlow Semi Condensed';font-weight:700;font-size:1.02rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.blk-t .num{width:22px;height:22px;border-radius:50%;background:var(--gold-pale);color:var(--gold-d);font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.blk p{color:var(--steel);font-size:.93rem;margin-bottom:6px}
+.blk ul{margin:8px 0 0 0;padding-left:20px}
+.blk li{color:var(--ink-2);font-size:.9rem;padding:3px 0}
+.field-list{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin-top:10px}
+.field-item{font-size:.86rem;padding:6px 0;border-bottom:1px solid var(--paper)}
+.field-item b{color:var(--ink);font-weight:700}
+.field-item span{color:var(--steel)}
+@media(max-width:600px){.field-list{grid-template-columns:1fr}}
+
+.note{background:var(--gold-pale);border:1px solid var(--gold-l);border-radius:10px;padding:12px 15px;font-size:.86rem;color:var(--gold-d);margin-top:10px;display:flex;gap:9px}
+.note b{color:var(--ink-2)}
+.warn{background:#FBEEEB;border:1px solid #F0C0B0;border-radius:10px;padding:12px 15px;font-size:.86rem;color:#B04A3A;margin-top:10px;display:flex;gap:9px}
+.path{display:inline-flex;align-items:center;gap:6px;background:var(--concrete);border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:600;color:var(--ink-2);font-family:'Barlow Semi Condensed'}
+.path .sep{color:var(--steel-l)}
+
+.role-tags{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.role-tag{font-size:.72rem;font-weight:800;padding:3px 11px;border-radius:20px;font-family:'Barlow Semi Condensed'}
+.role-tag.owner{background:#FFF3D6;color:#8A6300}
+.role-tag.staff{background:#E3F0FF;color:#1A5490}
+.role-tag.client{background:#EAF7EF;color:#2E9E6B}
+
+/* no-results */
+.no-results{display:none;text-align:center;padding:80px 20px;color:var(--steel)}
+.no-results .ico{font-size:2.6rem;margin-bottom:14px}
+.no-results.show{display:block}
+body.searching .module{display:none}
+body.searching .module.match{display:block}
+body.searching .content-head{display:none}
+body.searching .blk:not(.match-blk){opacity:.35}
+
+/* back to top */
+.totop{position:fixed;bottom:26px;right:26px;width:44px;height:44px;border-radius:50%;background:var(--ink);color:var(--gold-l);border:none;font-size:1.1rem;cursor:pointer;box-shadow:0 6px 20px rgba(15,34,55,.25);display:none;align-items:center;justify-content:center;z-index:150}
+.totop.show{display:flex}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="logo"><span class="logo-mark"></span>案場通</a>
+  <div class="search-wrap">
+    <span class="search-ico">🔍</span>
+    <input id="searchInput" type="text" placeholder="搜尋功能、操作步驟…例如「付款」「業主」「打卡」">
+    <button class="search-clear" id="searchClear">✕</button>
+  </div>
+  <span class="search-count" id="searchCount"></span>
+  <a href="index.html" class="topbar-home">回到首頁</a>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-cat">
+      <div class="sb-cat-t">開始使用</div>
+      <a href="#login" class="sb-link"><span class="ic">🔑</span>登入與身份</a>
+      <a href="#dashboard" class="sb-link"><span class="ic">📊</span>今日總覽</a>
+    </div>
+    <div class="sb-cat">
+      <div class="sb-cat-t">案場</div>
+      <a href="#projects" class="sb-link"><span class="ic">🏗️</span>案場總覽與建立</a>
+      <a href="#project-detail" class="sb-link"><span class="ic">📁</span>案場詳情頁</a>
+    </div>
+    <div class="sb-cat">
+      <div class="sb-cat-t">行政</div>
+      <a href="#quote" class="sb-link"><span class="ic">📋</span>報價管理</a>
+      <a href="#vendor" class="sb-link"><span class="ic">🏗️</span>廠商報價與付款</a>
+      <a href="#contract" class="sb-link"><span class="ic">📝</span>合約管理</a>
+      <a href="#progress" class="sb-link"><span class="ic">🔧</span>工程進度</a>
+    </div>
+    <div class="sb-cat">
+      <div class="sb-cat-t">會計</div>
+      <a href="#ledger" class="sb-link"><span class="ic">💰</span>帳款總覽</a>
+      <a href="#quickexpense" class="sb-link"><span class="ic">💸</span>快速記帳</a>
+      <a href="#invoice" class="sb-link"><span class="ic">🧾</span>發票管理</a>
+      <a href="#report" class="sb-link"><span class="ic">📊</span>財務報表</a>
+    </div>
+    <div class="sb-cat">
+      <div class="sb-cat-t">人資</div>
+      <a href="#hr" class="sb-link"><span class="ic">👥</span>人資管理</a>
+      <a href="#punch" class="sb-link"><span class="ic">🕐</span>員工打卡</a>
+      <a href="#salary" class="sb-link"><span class="ic">💵</span>薪資結算</a>
+    </div>
+    <div class="sb-cat">
+      <div class="sb-cat-t">客服行銷</div>
+      <a href="#cschat" class="sb-link"><span class="ic">💬</span>客戶諮詢</a>
+      <a href="#csquote" class="sb-link"><span class="ic">📐</span>快速報價</a>
+      <a href="#marketing" class="sb-link"><span class="ic">✨</span>行銷貼文</a>
+    </div>
+    <div class="sb-cat">
+      <div class="sb-cat-t">業主端</div>
+      <a href="#client-portal" class="sb-link"><span class="ic">📱</span>分享給業主</a>
+    </div>
+    <div class="sb-cat">
+      <div class="sb-cat-t">系統</div>
+      <a href="#settings" class="sb-link"><span class="ic">⚙️</span>系統設定</a>
+      <a href="#trash" class="sb-link"><span class="ic">🗑️</span>垃圾桶復原</a>
+      <a href="#apikey" class="sb-link"><span class="ic">🔌</span>AI 金鑰設定</a>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+    <div class="content-head">
+      <span style="font-size:.8rem;font-weight:700;color:var(--gold-d);letter-spacing:.1em;text-transform:uppercase">操作手冊</span>
+      <h1 class="disp" style="margin-top:8px">案場通完整功能說明</h1>
+      <p>左邊目錄可以直接跳到對應區塊，或用上方搜尋框輸入關鍵字直接找答案。</p>
+    </div>
+
+    <div class="no-results" id="noResults">
+      <div class="ico">🔍</div>
+      <div style="font-weight:700;margin-bottom:6px">找不到符合的內容</div>
+      <div style="font-size:.9rem">試試看用不同的關鍵字，或直接瀏覽左側目錄</div>
+    </div>
+
+    <!-- ══════════ 登入 ══════════ -->
+    <section class="module" id="login">
+      <div class="module-hd"><div class="module-ico">🔑</div><h2>登入與身份</h2></div>
+      <div class="module-cat">開始使用</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>選擇身份登入</div>
+          <p>打開網頁後，先點選你的身份：<b>老闆</b>、<b>員工</b>或<b>公務</b>（打卡專用），再輸入密碼即可登入。不需要輸入帳號。</p>
+          <div class="field-list">
+            <div class="field-item"><b>老闆</b><br><span>看得到全部資料，含成本、毛利、薪資</span></div>
+            <div class="field-item"><b>員工</b><br><span>可以填報價、記帳、打卡，看不到薪資明細</span></div>
+            <div class="field-item"><b>公務</b><br><span>專門用來打卡的共用身份</span></div>
+          </div>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>員工個人帳號登入</div>
+          <p>選「員工」或「公務」身份時，畫面會多一個「個人帳號」欄位。如果老闆有幫你在<b>人資管理</b>設定個人帳號密碼，填在這裡登入，系統就會記得是你本人在操作（尤其是打卡記錄會顯示你的名字，不是統一顯示「員工」）。</p>
+          <div class="note">💡 <span>不填個人帳號，就是用公司共用的員工密碼登入，功能一樣，但記錄不會顯示是誰操作的。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 今日總覽 ══════════ -->
+    <section class="module" id="dashboard">
+      <div class="module-hd"><div class="module-ico">📊</div><h2>今日總覽</h2></div>
+      <div class="module-cat">開始使用 · 首頁</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span></div>
+        <p style="color:var(--steel);margin-bottom:16px">老闆登入後的第一個畫面，把最重要的事情一次呈現，不用到處點找。</p>
+
+        <div class="blk">
+          <div class="blk-t">📈 四個統計數字</div>
+          <ul>
+            <li><b>施工中案場數</b> — 目前正在進行的工程有幾件</li>
+            <li><b>本月收款</b> — 這個月業主付了多少錢（外帳收入）</li>
+            <li><b>本月成本</b> — 這個月花了多少錢（內帳支出）</li>
+            <li><b>本月毛利</b> — 收款減成本，自動算好</li>
+          </ul>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t">⚡ 需要處理（待辦清單）</div>
+          <p>系統自動幫你抓出需要注意的事情，點下去直接跳到對應頁面：</p>
+          <ul>
+            <li>報價單超過 3 天業主還沒回覆</li>
+            <li>有應收款項還沒到帳</li>
+            <li>施工中案場超過 7 天沒更新進度</li>
+            <li>有員工補登打卡在等審核</li>
+            <li>案場完工超過 30 天但還沒結案</li>
+          </ul>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t">💸 快速記一筆</div>
+          <p>首頁最上方四個大按鈕：材料費、工資、雜項、油錢，點下去 3 秒記一筆帳，詳細操作看 <a href="#quickexpense" style="color:var(--gold-d);font-weight:700">快速記帳</a> 章節。</p>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t">🏗️ 近期案場</div>
+          <p>顯示最新的幾個案場，點下去直接進入案場詳情。想看全部案場，點「查看全部」或左側目錄的「案場總覽」。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 案場總覽 ══════════ -->
+    <section class="module" id="projects">
+      <div class="module-hd"><div class="module-ico">🏗️</div><h2>案場總覽與建立</h2></div>
+      <div class="module-cat">案場</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>新增案場</div>
+          <p>點右上角「＋新增案場」，填寫以下資料：</p>
+          <div class="field-list">
+            <div class="field-item"><b>案場名稱 *</b><br><span>例：林小姐-大安區老屋翻新</span></div>
+            <div class="field-item"><b>業主姓名</b><br><span>方便之後搜尋、報表顯示</span></div>
+            <div class="field-item"><b>地址</b></div>
+            <div class="field-item"><b>工程類型</b><br><span>全室翻新／局部裝修／商業空間等</span></div>
+            <div class="field-item"><b>案場狀態</b><br><span>詢價中／報價中／已簽約／施工中／完工／暫停</span></div>
+            <div class="field-item"><b>預計開工／完工日</b></div>
+            <div class="field-item"><b>負責員工</b><br><span>指派哪位員工負責這個案子</span></div>
+          </div>
+          <div class="note">💡 <b>只有案場名稱是必填</b>，其他欄位之後隨時可以回來補。</div>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>篩選案場</div>
+          <p>案場總覽頁上方有分類頁籤：全部／施工中／洽談中／完工，點一下就能只看該分類的案場，不用一頁一頁翻。</p>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">3</span>案場卡片看到什麼</div>
+          <p>每張案場卡片顯示：狀態標籤、業主、工程類型、地址、已收款金額、廠商報價筆數、開工日期。點卡片或「進入案場」按鈕就會打開完整的案場詳情。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 案場詳情 ══════════ -->
+    <section class="module" id="project-detail">
+      <div class="module-hd"><div class="module-ico">📁</div><h2>案場詳情頁</h2></div>
+      <div class="module-cat">案場</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+        <p style="color:var(--steel);margin-bottom:16px">這是整個系統的核心。點進一個案場，六個頁籤把這個案子的所有資料都放在一起，不用在不同頁面之間切換找資料。</p>
+
+        <div class="blk">
+          <div class="blk-t">📊 總覽</div>
+          <p>這個案子目前收了多少、花了多少、賺多少，一眼看到。下面有四個入口卡片，點下去直接跳到對應頁籤。也可以在這裡直接改案場狀態，或編輯案場基本資料。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t">📋 報價</div>
+          <p>這個案場所有的報價單都列在這裡。點「新建報價單」會直接帶入業主姓名，不用重複輸入。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t">🏗️ 廠商報價</div>
+          <p>這個案場配合的所有工班報價都在這，顯示合計成本。詳細操作看 <a href="#vendor" style="color:var(--gold-d);font-weight:700">廠商報價與付款</a> 章節。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t">📝 合約</div>
+          <p>合約檔案上傳後歸檔在這裡，點開可以查看或下載。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t">💰 帳款</div>
+          <p>這個案場所有的收款、支出紀錄，外帳收入、內帳支出、毛利自動算好顯示在最上面。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t">🔨 進度</div>
+          <p>用時間軸方式顯示施工進度，已完成的項目打勾，方便之後分享給業主看。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 報價管理 ══════════ -->
+    <section class="module" id="quote">
+      <div class="module-hd"><div class="module-ico">📋</div><h2>報價管理</h2></div>
+      <div class="module-cat">行政</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>新建報價單</div>
+          <p>填業主姓名、工程類型，逐項加入工程分類與細項金額，系統自動算小計、管理費、總價。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>輸出 Excel（A4 格式）</div>
+          <p>報價單完成後可以直接下載成 Excel 檔，欄寬已經設定好剛好塞滿 A4 紙張，列印出來就是正式報價單，不用自己調格式。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">3</span>存成公版</div>
+          <p>常用的報價項目可以存起來，下次類似的案子直接載入修改，不用每次重新輸入。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">4</span>儲存後的下一步</div>
+          <p>報價單存檔後，系統會問你要不要「新增為案場」或「下載 Excel 給業主」，一步接一步，不用自己想接下來要做什麼。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 廠商報價 ══════════ -->
+    <section class="module" id="vendor">
+      <div class="module-hd"><div class="module-ico">🏗️</div><h2>廠商報價與付款</h2></div>
+      <div class="module-cat">行政</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>新增廠商報價</div>
+          <p>點「＋新增廠商報價」，可以直接拍照上傳工班給的報價單，AI 自動辨識成表格（工項名稱／數量／單位／單價／小計），不用手動一項一項打字。</p>
+          <div class="note">💡 <span>辨識完的內容都可以手動修改調整，AI 只是幫你省第一次輸入的時間。</span></div>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>依案場分組、比價</div>
+          <p>廠商報價會依案場自動分組，同一個案場配合多家廠商時，可以清楚比較每家的報價。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">3</span>付款給廠商</div>
+          <p>每張廠商卡片右上角有付款狀態標籤（未付款／部分付款／已付清），點「💳付款」按鈕：</p>
+          <ul>
+            <li>可以快捷選 3成／5成／付清</li>
+            <li>也可以手動輸入金額</li>
+            <li>付款紀錄會完整保留（分期付款也看得到每一筆）</li>
+          </ul>
+          <div class="note">💡 <b>付款當下會自動記入內帳支出</b>，不用另外再去帳款頁面記一次，一個動作兩件事都做完。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 合約管理 ══════════ -->
+    <section class="module" id="contract">
+      <div class="module-hd"><div class="module-ico">📝</div><h2>合約管理</h2></div>
+      <div class="module-cat">行政</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>上傳合約</div>
+          <p>填業主姓名、合約金額、備注，上傳合約掃描檔或照片（可以多檔），存檔後自動附在對應的案場裡。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>合約簽訂後自動建立進度追蹤</div>
+          <p>合約存檔後，系統會自動建立一組工程進度里程碑（合約簽訂→開工確認→施工中→驗收→結案），不用自己手動新增。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 工程進度 ══════════ -->
+    <section class="module" id="progress">
+      <div class="module-hd"><div class="module-ico">🔧</div><h2>工程進度</h2></div>
+      <div class="module-cat">行政</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+        <div class="blk">
+          <div class="blk-t">更新施工進度</div>
+          <p>在案場詳情的「進度」頁籤，新增進度項目、填寫日期跟備注，完成的項目打勾。這些進度也會出現在<a href="#client-portal" style="color:var(--gold-d);font-weight:700">業主分享頁面</a>的時間軸上。</p>
+          <div class="warn">⚠️ <span>超過 7 天沒更新的施工中案場，會出現在老闆首頁的「需要處理」清單裡提醒你。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 帳款總覽 ══════════ -->
+    <section class="module" id="ledger">
+      <div class="module-hd"><div class="module-ico">💰</div><h2>帳款總覽</h2></div>
+      <div class="module-cat">會計</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span></div>
+        <p style="color:var(--steel);margin-bottom:16px">內帳（工程成本）跟外帳（客戶收款）分開記，但同一頁就能切換查看。</p>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>新增收支記錄</div>
+          <p>點「＋外帳收款」或「＋內帳支出」，選擇收入或支出方向，填金額、分類、日期、案場，存檔。</p>
+          <div class="note">💡 <span>內帳和外帳都可以記收入或支出，例如：內帳收入可以記「廠商退款」，外帳支出可以記「退款給業主」。</span></div>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>月份切換</div>
+          <p>上方用「←　2026年6月　→」切換月份，或按「全期」看所有時間的記錄。旁邊的下拉選單可以再篩選特定案場。</p>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">3</span>三種檢視方式</div>
+          <ul>
+            <li><b>收支明細</b> — 按日期列出每一筆記錄，可依收入/支出分類快速篩選</li>
+            <li><b>月度總表</b> — 每個月一行，收入、支出、毛利、毛利率一次看完，點某個月直接跳到那個月的明細</li>
+            <li><b>案場分析</b> — 每個案場一行，依毛利高到低排序，點案場直接進去看該案場的帳款</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 快速記帳 ══════════ -->
+    <section class="module" id="quickexpense">
+      <div class="module-hd"><div class="module-ico">💸</div><h2>快速記帳</h2></div>
+      <div class="module-cat">會計</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+        <div class="blk">
+          <div class="blk-t">工地現場三秒記一筆</div>
+          <p>首頁最上方四個按鈕：<b>🧱材料費、👷工資、📦雜項、⛽油錢</b>。點下去輸入金額、選案場（可以不選），按「記帳」就完成，直接記入內帳支出，不用打開完整的帳款表單。</p>
+          <div class="note">💡 <span>手機在工地現場就能用，不用回辦公室補登。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 發票管理 ══════════ -->
+    <section class="module" id="invoice">
+      <div class="module-hd"><div class="module-ico">🧾</div><h2>發票管理</h2></div>
+      <div class="module-cat">會計</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span></div>
+        <div class="blk">
+          <p>記錄開立的發票資料，可依關鍵字搜尋，方便對帳跟報稅時查找。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 財務報表 ══════════ -->
+    <section class="module" id="report">
+      <div class="module-hd"><div class="module-ico">📊</div><h2>財務報表</h2></div>
+      <div class="module-cat">會計</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span></div>
+        <p style="color:var(--steel);margin-bottom:16px">四份現成報表，點按鈕直接產生，不用自己拉公式。</p>
+        <div class="blk">
+          <div class="blk-t">📅 月度損益報表</div>
+          <p>近 12 個月，每月外帳收入、內帳支出、毛利、毛利率列表。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t">🏗️ 案場毛利分析</div>
+          <p>每個案場的收入、支出、毛利，依毛利高低排序，一眼看出哪個案子最賺。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t">📤 廠商應付帳款</div>
+          <p>還沒付清的廠商款項清單，可以直接在報表上點「標記付款」。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t">💰 客戶應收帳款</div>
+          <p>業主還沒付清的款項清單，可以直接點「標記收款」更新狀態。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 人資管理 ══════════ -->
+    <section class="module" id="hr">
+      <div class="module-hd"><div class="module-ico">👥</div><h2>人資管理</h2></div>
+      <div class="module-cat">人資</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span></div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>新增員工</div>
+          <p>填姓名、職稱、電話、身分證字號、銀行帳號、到職日、薪資結構（底薪、伙食津貼、交通補助、其他）。</p>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>設定打卡帳號（選填）</div>
+          <p>在同一個表單裡，「打卡帳號設定」區塊可以幫員工設定個人帳號密碼，設定後員工就能用自己的帳號登入打卡與系統，而不是用共用帳號。</p>
+          <div class="warn">⚠️ <span>帳號不能跟其他員工重複，系統會自動檢查並提醒。</span></div>
+        </div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">3</span>編輯或移除員工</div>
+          <p>點員工卡片上的編輯按鈕可以修改資料。移除員工時資料不會真的刪除，只是不再顯示於名單，<b>歷史打卡和薪資記錄都會保留</b>，方便日後查核。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 打卡 ══════════ -->
+    <section class="module" id="punch">
+      <div class="module-hd"><div class="module-ico">🕐</div><h2>員工打卡</h2></div>
+      <div class="module-cat">人資</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag staff">員工</span></div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>選擇今天工作的案場</div>
+          <p>打卡畫面上方有「今天在哪個案場？」下拉選單，選擇後系統會記住下次自動帶入，方便同一個案場連續施工時不用每天重選。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>上下班打卡</div>
+          <p>按下大按鈕即完成打卡，會記錄時間、地點（GPS）跟選擇的案場。今日出勤狀態會顯示上班/下班時間。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">3</span>補登申請</div>
+          <p>忘記打卡可以送出補登申請，老闆在人資管理審核通過後才會生效。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 薪資結算 ══════════ -->
+    <section class="module" id="salary">
+      <div class="module-hd"><div class="module-ico">💵</div><h2>薪資結算</h2></div>
+      <div class="module-cat">人資</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span></div>
+
+        <div class="blk">
+          <div class="blk-t">每月薪資表</div>
+          <p>系統自動列出每位員工當月薪資明細：底薪、津貼、勞保／健保扣除額、實領金額，並自動帶入<b>當月出勤天數</b>（從打卡記錄計算）。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t">標記匯款</div>
+          <p>薪資匯款完成後，點「標記匯款」更新狀態，方便追蹤誰已發薪、誰還沒發。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 客戶諮詢 ══════════ -->
+    <section class="module" id="cschat">
+      <div class="module-hd"><div class="module-ico">💬</div><h2>客戶諮詢</h2></div>
+      <div class="module-cat">客服行銷</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+        <div class="blk">
+          <p>每位客戶獨立的 AI 對話視窗，可以協助回覆諮詢、報價說明。右上角可以把對話「連結案場」，方便之後在案場裡回顧跟這位業主的溝通紀錄。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 快速報價 ══════════ -->
+    <section class="module" id="csquote">
+      <div class="module-hd"><div class="module-ico">📐</div><h2>快速報價</h2></div>
+      <div class="module-cat">客服行銷</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+        <div class="blk">
+          <p>業主剛詢價、還沒確定要不要簽約時，用這裡快速抓一個估算報價，不用進到正式的報價單流程。存檔後系統會提示「要不要新增為正式案場」，一鍵轉換不用重打資料。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 行銷貼文 ══════════ -->
+    <section class="module" id="marketing">
+      <div class="module-hd"><div class="module-ico">✨</div><h2>行銷貼文</h2></div>
+      <div class="module-cat">客服行銷</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag staff">員工</span></div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>以案場為主題</div>
+          <p>上方「以哪個案場為主題？」下拉選單選一個案場，系統會自動帶入工程類型、地址、業主等資訊到補充說明欄，不用手動打字描述。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>設定平台、語氣、風格</div>
+          <p>選擇要發的平台（IG／FB／LINE）、主題、語氣風格，按「生成貼文」AI 會自動寫好文案。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">3</span>生成搭配的行銷圖片</div>
+          <p>貼文生成後，下方會出現圖片生成區，選一個風格（輕奢／極簡／溫暖／現代）即可產生搭配的宣傳圖。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 業主端 ══════════ -->
+    <section class="module" id="client-portal">
+      <div class="module-hd"><div class="module-ico">📱</div><h2>分享給業主</h2></div>
+      <div class="module-cat">業主端</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span><span class="role-tag client">業主</span></div>
+
+        <div class="blk">
+          <div class="blk-t"><span class="num">1</span>產生分享連結</div>
+          <p>進入案場「總覽」頁籤，點綠色的「📱分享給業主」按鈕，會產生一個 QR Code 和專屬連結，可以直接複製傳給業主，或讓業主現場掃描。</p>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">2</span>業主看到什麼</div>
+          <p>業主打開連結後不需要註冊、不需要下載 App，可以看到：</p>
+          <ul>
+            <li>工程進度百分比與時間軸</li>
+            <li>自己已經付的收款紀錄</li>
+            <li>合約文件（如果有上傳）</li>
+          </ul>
+        </div>
+        <div class="blk">
+          <div class="blk-t"><span class="num">3</span>成本完全保密</div>
+          <p>業主看到的只有「他付了多少」，絕對看不到你的工程成本、廠商費用、案場毛利。你的利潤資訊只有老闆帳號看得到。</p>
+          <div class="note">🔒 <b>安全提醒：</b><span>連結請只傳給業主本人，任何拿到連結的人都可以查看該案場的進度資訊。</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 系統設定 ══════════ -->
+    <section class="module" id="settings">
+      <div class="module-hd"><div class="module-ico">⚙️</div><h2>系統設定</h2></div>
+      <div class="module-cat">系統</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span></div>
+        <div class="blk">
+          <p>管理報價分類、收支分類標籤等系統選項，可以新增或刪除自訂分類。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ 垃圾桶 ══════════ -->
+    <section class="module" id="trash">
+      <div class="module-hd"><div class="module-ico">🗑️</div><h2>垃圾桶復原</h2></div>
+      <div class="module-cat">系統</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span></div>
+        <div class="blk">
+          <p>刪除的合約、廠商報價、帳款記錄不會馬上消失，會先進垃圾桶。在系統設定裡可以看到已刪除的項目並復原，避免誤刪造成資料遺失。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ API 金鑰 ══════════ -->
+    <section class="module" id="apikey">
+      <div class="module-hd"><div class="module-ico">🔌</div><h2>AI 金鑰設定</h2></div>
+      <div class="module-cat">系統</div>
+      <div class="module-body">
+        <div class="role-tags"><span class="role-tag owner">老闆</span></div>
+        <div class="blk">
+          <p>首頁下方「進階設定」裡輸入一次 AI 金鑰後，系統會永久記住，全平台的 AI 功能（廠商報價辨識、AI 對帳助理、行銷文案生成）就會全部啟用。可以按「測試連線」確認是否設定成功，或「清除」重新設定。</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<button class="totop" id="toTop">↑</button>
+
+<script>
+// ── Sidebar active state on scroll ──
+const sections=document.querySelectorAll('.module');
+const links=document.querySelectorAll('.sb-link');
+const io=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const link=document.querySelector('.sb-link[href="#'+e.target.id+'"]');
+      if(link)link.classList.add('active');
+    }
+  });
+},{rootMargin:'-20% 0px -70% 0px'});
+sections.forEach(s=>io.observe(s));
+
+// ── Back to top ──
+const toTop=document.getElementById('toTop');
+window.addEventListener('scroll',()=>{
+  toTop.classList.toggle('show',window.scrollY>500);
+});
+toTop.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+// ── Search ──
+const searchInput=document.getElementById('searchInput');
+const searchClear=document.getElementById('searchClear');
+const searchCount=document.getElementById('searchCount');
+const noResults=document.getElementById('noResults');
+const allModules=[...document.querySelectorAll('.module')];
+
+// snapshot original HTML for un-highlighting
+const originalHTML=new Map();
+allModules.forEach(m=>originalHTML.set(m,m.innerHTML));
+
+function clearHighlights(){
+  allModules.forEach(m=>{
+    m.innerHTML=originalHTML.get(m);
+    m.classList.remove('match');
+  });
+  document.querySelectorAll('.blk').forEach(b=>b.classList.remove('match-blk'));
+}
+
+function highlightText(root,term){
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);
+  const nodes=[];
+  let n;
+  while(n=walker.nextNode()){
+    if(n.nodeValue.toLowerCase().includes(term)) nodes.push(n);
+  }
+  nodes.forEach(node=>{
+    const regex=new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+    const span=document.createElement('span');
+    span.innerHTML=node.nodeValue.replace(regex,'<mark>$1</mark>');
+    node.parentNode.replaceChild(span,node);
+  });
+}
+
+function runSearch(){
+  const term=searchInput.value.trim().toLowerCase();
+  searchClear.classList.toggle('show',term.length>0);
+
+  if(!term){
+    document.body.classList.remove('searching');
+    clearHighlights();
+    noResults.classList.remove('show');
+    searchCount.textContent='';
+    return;
+  }
+
+  document.body.classList.add('searching');
+  clearHighlights();
+
+  let matchCount=0;
+  allModules.forEach(m=>{
+    const text=m.textContent.toLowerCase();
+    if(text.includes(term)){
+      m.classList.add('match');
+      matchCount++;
+      highlightText(m,term);
+      // mark matching blocks so non-matching ones can be dimmed
+      m.querySelectorAll('.blk').forEach(b=>{
+        if(b.textContent.toLowerCase().includes(term)) b.classList.add('match-blk');
+      });
+    }
+  });
+
+  noResults.classList.toggle('show',matchCount===0);
+  searchCount.textContent=matchCount?matchCount+' 個區塊符合':'';
+}
+
+searchInput.addEventListener('input',runSearch);
+searchClear.addEventListener('click',()=>{
+  searchInput.value='';
+  runSearch();
+  searchInput.focus();
+});
+
+// keyboard shortcut: press "/" to focus search
+document.addEventListener('keydown',(e)=>{
+  if(e.key==='/'&&document.activeElement!==searchInput){
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if(e.key==='Escape'&&document.activeElement===searchInput){
+    searchInput.value='';
+    runSearch();
+    searchInput.blur();
+  }
+});
+</script>
+</body>
+</html>

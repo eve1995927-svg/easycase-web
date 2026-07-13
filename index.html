@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>案場通 — 統包裝修的後台，一個案場管到底</title>
+<meta name="description" content="專為統包裝修、室內設計公司打造的後台系統。報價、合約、工班付款、帳款、進度，全部串在同一個案場裡。不用再開五個 Excel。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Barlow+Semi+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0F2237;
+  --ink-2:#1B344E;
+  --paper:#F6F4EE;
+  --blueprint:#13355C;
+  --grid:rgba(255,255,255,.07);
+  --gold:#C8A44A;
+  --gold-d:#9A7830;
+  --gold-l:#E8C870;
+  --steel:#5B6B7A;
+  --steel-l:#94A2AF;
+  --concrete:#E4E0D6;
+  --ok:#2E9E6B;
+  --line:rgba(15,34,55,.12);
+  --w:#fff;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Barlow','Noto Sans TC',sans-serif;
+  color:var(--ink);
+  background:var(--paper);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.disp{font-family:'Barlow Semi Condensed','Noto Sans TC',sans-serif;font-weight:800;letter-spacing:-.01em;line-height:1.04}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.eyebrow{font-family:'Barlow Semi Condensed',sans-serif;font-weight:700;font-size:.8rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-d)}
+a{color:inherit;text-decoration:none}
+
+/* ─── NAV ─── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(246,244,238,.86);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1120px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Barlow Semi Condensed';font-weight:800;font-size:1.25rem;color:var(--ink)}
+.logo-mark{width:30px;height:30px;border:2.5px solid var(--gold);border-radius:5px;position:relative;flex-shrink:0}
+.logo-mark::before{content:"";position:absolute;inset:5px 5px auto 5px;height:2.5px;background:var(--gold)}
+.logo-mark::after{content:"";position:absolute;inset:auto 5px 5px 5px;height:2.5px;background:var(--gold);opacity:.5}
+.nav-links{display:flex;align-items:center;gap:30px}
+.nav-links a{font-size:.92rem;font-weight:500;color:var(--steel);transition:color .2s}
+.nav-links a:hover{color:var(--ink)}
+.nav-cta{background:var(--ink);color:var(--paper)!important;padding:10px 20px;border-radius:8px;font-weight:600;font-size:.9rem;transition:transform .15s,background .2s}
+.nav-cta:hover{background:var(--blueprint);transform:translateY(-1px)}
+@media(max-width:720px){.nav-links a:not(.nav-cta){display:none}}
+
+/* ─── HERO ─── */
+.hero{
+  background:var(--ink);
+  color:var(--paper);
+  padding:150px 0 90px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:34px 34px;
+  mask-image:radial-gradient(ellipse 80% 70% at 70% 30%,#000 40%,transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 70% 30%,#000 40%,transparent 100%);
+}
+.hero-in{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:50px;align-items:center}
+.hero h1{font-size:clamp(2.6rem,5.4vw,4.15rem);color:#fff;margin:18px 0 22px}
+.hero h1 .hl{color:var(--gold-l);position:relative;white-space:nowrap}
+.hero p.lead{font-size:1.2rem;color:var(--steel-l);max-width:30em;margin-bottom:34px;line-height:1.65}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn-gold{background:var(--gold);color:var(--ink);padding:15px 30px;border-radius:9px;font-weight:800;font-size:1.02rem;font-family:'Barlow Semi Condensed';letter-spacing:.02em;transition:transform .15s,box-shadow .2s;box-shadow:0 6px 24px rgba(200,164,74,.28)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(200,164,74,.4)}
+.btn-ghost{color:var(--paper);padding:15px 24px;font-weight:600;font-size:1rem;border:1.5px solid rgba(255,255,255,.24);border-radius:9px;transition:border-color .2s,background .2s}
+.btn-ghost:hover{border-color:var(--gold-l);background:rgba(255,255,255,.04)}
+.hero-note{margin-top:20px;font-size:.86rem;color:var(--steel);display:flex;align-items:center;gap:8px}
+.hero-note b{color:var(--gold-l);font-weight:700}
+
+/* Hero blueprint diagram */
+.blueprint{position:relative;aspect-ratio:1/1;max-width:440px;margin-left:auto}
+.bp-svg{width:100%;height:100%;overflow:visible}
+.bp-node{fill:var(--ink-2);stroke:var(--gold);stroke-width:1.5}
+.bp-label{font-family:'Barlow Semi Condensed';font-weight:700;font-size:13px;fill:#fff}
+.bp-sub{font-family:'Barlow';font-size:9px;fill:var(--steel-l)}
+.bp-line{stroke:var(--gold);stroke-width:1.5;stroke-dasharray:4 4;opacity:.5;fill:none}
+.bp-center{fill:var(--gold);stroke:none}
+.bp-center-txt{font-family:'Barlow Semi Condensed';font-weight:800;font-size:15px;fill:var(--ink);text-anchor:middle}
+@keyframes dash{to{stroke-dashoffset:-16}}
+.bp-line{animation:dash 1.4s linear infinite}
+.bp-node-g{opacity:0;transform-origin:center;animation:pop .5s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+@media(max-width:860px){
+  .hero-in{grid-template-columns:1fr;gap:40px}
+  .blueprint{max-width:360px;margin:0 auto}
+}
+
+/* ─── TICKER / TRUST ─── */
+.strip{background:var(--blueprint);color:var(--steel-l);padding:16px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.strip-in{display:flex;align-items:center;justify-content:center;gap:38px;flex-wrap:wrap;font-family:'Barlow Semi Condensed';font-weight:600;font-size:.92rem;letter-spacing:.02em}
+.strip-in span{display:flex;align-items:center;gap:9px}
+.strip-in .dot{color:var(--gold-l)}
+
+/* ─── PAIN ─── */
+.section{padding:100px 0}
+.section-head{max-width:640px;margin-bottom:56px}
+.section-head h2{font-size:clamp(2rem,3.8vw,2.9rem);margin:14px 0 16px}
+.section-head p{font-size:1.12rem;color:var(--steel)}
+.pain-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.pain{background:var(--w);border:1px solid var(--line);border-radius:14px;padding:28px;position:relative;transition:transform .2s,box-shadow .2s}
+.pain:hover{transform:translateY(-3px);box-shadow:0 14px 34px rgba(15,34,55,.08)}
+.pain-ico{font-size:1.6rem;margin-bottom:14px;display:block}
+.pain h3{font-family:'Barlow Semi Condensed';font-weight:700;font-size:1.28rem;margin-bottom:8px;color:var(--ink)}
+.pain p{color:var(--steel);font-size:.98rem}
+.pain .old{margin-top:14px;font-size:.82rem;color:#B04A3A;background:#FBEEEB;border-radius:7px;padding:8px 12px;display:inline-block;font-weight:500}
+@media(max-width:680px){.pain-grid{grid-template-columns:1fr}}
+
+/* ─── CHAOS → ORDER DEMO (pain section) ─── */
+.chaos-demo{margin-bottom:44px}
+.chaos-toggle{display:flex;justify-content:center;gap:8px;margin-bottom:26px}
+.ct-btn{padding:10px 20px;border-radius:24px;border:1.5px solid var(--line);background:var(--w);font-family:'Barlow Semi Condensed';font-weight:700;font-size:.9rem;color:var(--steel);cursor:pointer;transition:all .2s}
+.ct-btn.on{border-color:var(--ink);background:var(--ink);color:#fff}
+.chaos-stage{position:relative;height:280px;background:var(--w);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.chaos-view,.order-view{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transform:scale(.94);transition:opacity .45s ease,transform .45s ease;pointer-events:none}
+.chaos-view.show,.order-view.show{opacity:1;transform:scale(1);pointer-events:auto}
+.chip{position:absolute;background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:10px 14px;font-size:.78rem;font-weight:700;color:var(--ink-2);box-shadow:0 6px 18px rgba(15,34,55,.09);text-align:center;animation:chipFloat 4.5s ease-in-out infinite}
+.chip span{display:block;font-weight:500;color:var(--steel);font-size:.7rem;margin-top:3px}
+.chip.c1{top:14%;left:8%;transform:rotate(-7deg);animation-delay:0s}
+.chip.c2{top:8%;right:12%;transform:rotate(5deg);animation-delay:.4s}
+.chip.c3{bottom:16%;left:14%;transform:rotate(4deg);animation-delay:.8s}
+.chip.c4{bottom:10%;right:8%;transform:rotate(-5deg);animation-delay:1.2s}
+.chip.c5{top:42%;left:38%;transform:rotate(-3deg);animation-delay:1.6s}
+.chip.c6{bottom:38%;right:34%;transform:rotate(6deg);background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.c6 span{color:var(--steel-l)}
+@keyframes chipFloat{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-6px) rotate(var(--r,0deg))}}
+.order-card{background:var(--paper);border:1.5px solid var(--gold-l);border-radius:14px;padding:20px 26px;min-width:280px;box-shadow:0 10px 30px rgba(15,34,55,.1)}
+.order-card-hd{font-family:'Barlow Semi Condensed';font-weight:800;font-size:1.02rem;color:var(--ink);margin-bottom:12px;padding-bottom:10px;border-bottom:1.5px solid var(--line)}
+.order-row{display:flex;justify-content:space-between;font-size:.86rem;padding:6px 0;color:var(--steel)}
+.order-row b{color:var(--ink-2);font-weight:700}
+.order-row b.ok{color:var(--ok)}
+
+/* ─── ANIMATED INTERFACE DEMO ─── */
+.demo-shell{background:var(--ink-2);border-radius:16px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.28);margin-top:8px}
+.demo-bar{display:flex;align-items:center;gap:8px;padding:11px 16px;background:#0C1A2A}
+.db-dot{width:10px;height:10px;border-radius:50%}
+.db-dot.r{background:#F0847A}.db-dot.y{background:#F0C05A}.db-dot.g{background:#7ACB8F}
+.db-url{margin-left:10px;background:rgba(255,255,255,.06);border-radius:6px;padding:4px 14px;font-size:.76rem;color:var(--steel-l);font-family:'Barlow Semi Condensed'}
+.demo-screen{position:relative;background:var(--paper);min-height:300px;overflow:hidden}
+.demo-panel{position:absolute;inset:0;padding:26px 28px;display:none;flex-direction:column;justify-content:center}
+.demo-panel.active{display:flex}
+.dp-label{font-family:'Barlow Semi Condensed';font-weight:800;font-size:.72rem;letter-spacing:.1em;color:var(--gold-d);text-transform:uppercase;margin-bottom:14px}
+/* step1 login */
+.dp-login{display:flex;flex-direction:column;align-items:center;gap:14px}
+.dp-role-row{display:flex;gap:8px}
+.dp-role{padding:8px 16px;border-radius:8px;border:1.5px solid var(--line);font-size:.8rem;font-weight:700;color:var(--steel);background:#fff}
+.dp-role.sel{border-color:var(--gold);background:var(--gold-pale);color:var(--gold-d)}
+.dp-pw{display:flex;gap:6px}
+.dp-dot{width:9px;height:9px;border-radius:50%;background:var(--concrete);opacity:0;animation:dotIn .25s ease forwards}
+.dp-dot:nth-child(1){animation-delay:.3s}.dp-dot:nth-child(2){animation-delay:.5s}.dp-dot:nth-child(3){animation-delay:.7s}.dp-dot:nth-child(4){animation-delay:.9s}
+@keyframes dotIn{to{opacity:1;background:var(--ink)}}
+.dp-ok{opacity:0;font-size:.85rem;font-weight:700;color:var(--ok);display:flex;align-items:center;gap:6px;animation:fadeUp .4s ease 1.2s forwards}
+/* step2 case form */
+.dp-form{display:flex;flex-direction:column;gap:9px;max-width:340px;margin:0 auto;width:100%}
+.dp-field{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;font-size:.82rem;color:var(--ink-2);opacity:0;transform:translateY(6px);animation:fadeUp .4s ease forwards}
+.dp-field:nth-child(1){animation-delay:.15s}.dp-field:nth-child(2){animation-delay:.4s}.dp-field:nth-child(3){animation-delay:.65s}
+.dp-field b{color:var(--steel);font-weight:500;margin-right:4px}
+.dp-card-in{margin-top:6px;opacity:0;animation:fadeUp .4s ease 1s forwards;background:var(--ink);color:#fff;border-radius:10px;padding:12px 14px;font-size:.8rem;font-weight:700;display:flex;align-items:center;gap:8px}
+/* step3 quote */
+.dp-quote-list{max-width:360px;margin:0 auto;width:100%}
+.dp-qi{display:flex;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:7px;padding:9px 13px;font-size:.8rem;margin-bottom:6px;opacity:0;transform:translateX(-8px);animation:fadeRight .35s ease forwards}
+.dp-qi:nth-child(1){animation-delay:.1s}.dp-qi:nth-child(2){animation-delay:.35s}.dp-qi:nth-child(3){animation-delay:.6s}
+.dp-qtotal{display:flex;justify-content:space-between;padding-top:9px;margin-top:5px;border-top:1.5px solid var(--ink);font-weight:800;opacity:0;animation:fadeUp .4s ease .95s forwards}
+.dp-qtotal b{color:var(--gold-d);font-family:'Barlow Semi Condensed';font-size:1.1rem}
+/* step4 vendor pay */
+.dp-pay-card{max-width:320px;margin:0 auto;width:100%;background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.dp-pay-top{display:flex;justify-content:space-between;font-size:.86rem;font-weight:700;margin-bottom:12px}
+.dp-pay-bar{height:9px;background:var(--concrete);border-radius:10px;overflow:hidden;margin-bottom:8px}
+.dp-pay-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold-l),var(--gold));border-radius:10px;animation:fillBar 1s ease .3s forwards}
+@keyframes fillBar{to{width:30%}}
+.dp-pay-note{font-size:.74rem;color:var(--steel);opacity:0;animation:fadeUp .4s ease 1.3s forwards}
+.dp-ledger-sync{margin-top:12px;font-size:.76rem;color:var(--ok);font-weight:700;display:flex;align-items:center;gap:6px;opacity:0;animation:fadeUp .4s ease 1.6s forwards}
+/* step5 quickbook */
+.dp-qb-row{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+.dp-qb-btn{width:64px;height:64px;border-radius:12px;background:#fff;border:1.5px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.3rem;gap:3px;opacity:0;transform:scale(.8);animation:popIn .3s ease forwards}
+.dp-qb-btn span{font-size:.62rem;font-weight:700;color:var(--steel)}
+.dp-qb-btn:nth-child(1){animation-delay:.1s}.dp-qb-btn:nth-child(2){animation-delay:.22s;border-color:var(--gold);background:var(--gold-pale)}.dp-qb-btn:nth-child(3){animation-delay:.34s}.dp-qb-btn:nth-child(4){animation-delay:.46s}
+@keyframes popIn{to{opacity:1;transform:scale(1)}}
+.dp-qb-result{max-width:280px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 14px;display:flex;justify-content:space-between;font-size:.82rem;font-weight:700;opacity:0;animation:fadeUp .4s ease .75s forwards}
+.dp-qb-result b{color:var(--bad,#B04A3A)}
+/* step6 client share */
+.dp-share{display:flex;align-items:center;justify-content:center;gap:26px}
+.dp-qr{width:88px;height:88px;background:#fff;border:2px solid var(--ink);border-radius:10px;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:repeat(5,1fr);padding:8px;gap:2px;opacity:0;animation:fadeUp .5s ease .1s forwards}
+.dp-qr i{background:var(--ink);border-radius:1px}
+.dp-qr i:nth-child(3n){background:transparent}
+.dp-share-info{opacity:0;animation:fadeUp .4s ease .5s forwards}
+.dp-share-info .t{font-weight:800;font-size:.95rem;margin-bottom:4px}
+.dp-share-bar{width:150px;height:8px;background:var(--concrete);border-radius:10px;overflow:hidden;margin-top:8px}
+.dp-share-fill{height:100%;width:0;background:var(--gold);border-radius:10px;animation:fillShare 1s ease .9s forwards}
+@keyframes fillShare{to{width:65%}}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeRight{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+
+.demo-progress{height:3px;background:rgba(255,255,255,.08)}
+.demo-progress-fill{height:100%;width:0;background:var(--gold);transition:width linear}
+.demo-nav{display:grid;grid-template-columns:repeat(6,1fr);background:var(--ink);gap:1px}
+.dn-btn{background:var(--ink-2);border:none;color:var(--steel-l);padding:13px 6px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;transition:background .2s,color .2s}
+.dn-btn .dn-n{font-family:'Barlow Semi Condensed';font-weight:800;font-size:.7rem}
+.dn-btn .dn-t{font-size:.72rem;font-weight:600}
+.dn-btn.on{background:var(--ink);color:var(--gold-l)}
+.dn-btn:hover{color:#fff}
+@media(max-width:720px){
+  .demo-nav{grid-template-columns:repeat(3,1fr)}
+  .chaos-stage{height:340px}
+  .chip{font-size:.7rem;padding:8px 11px}
+  .demo-screen{min-height:340px}
+}
+
+/* ─── SOLUTION / CASE-CENTRIC ─── */
+.sol{background:var(--ink);color:var(--paper)}
+.sol .section-head h2{color:#fff}
+.sol .section-head p{color:var(--steel-l)}
+.sol-flow{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:20px}
+.flow-step{background:var(--ink-2);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:20px 14px;text-align:center;position:relative}
+.flow-step .n{font-family:'Barlow Semi Condensed';font-weight:800;font-size:.78rem;color:var(--gold);letter-spacing:.1em}
+.flow-step .ico{font-size:1.7rem;margin:10px 0 8px;display:block}
+.flow-step h4{font-family:'Barlow Semi Condensed';font-weight:700;font-size:1.02rem;color:#fff;margin-bottom:2px}
+.flow-step p{font-size:.78rem;color:var(--steel-l);line-height:1.4}
+.flow-step:not(:last-child)::after{content:"→";position:absolute;right:-11px;top:50%;transform:translateY(-50%);color:var(--gold);font-weight:800;z-index:3}
+@media(max-width:860px){
+  .sol-flow{grid-template-columns:repeat(2,1fr);gap:14px}
+  .flow-step:not(:last-child)::after{display:none}
+}
+
+/* ─── FEATURES ─── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.feat{background:var(--w);border:1px solid var(--line);border-radius:14px;padding:30px;transition:border-color .2s,transform .2s}
+.feat:hover{border-color:var(--gold-l);transform:translateY(-3px)}
+.feat-tag{font-family:'Barlow Semi Condensed';font-weight:800;font-size:.72rem;letter-spacing:.14em;color:var(--gold-d);text-transform:uppercase}
+.feat h3{font-family:'Barlow Semi Condensed';font-weight:700;font-size:1.32rem;margin:10px 0 10px}
+.feat p{color:var(--steel);font-size:.96rem}
+.feat ul{list-style:none;margin-top:14px}
+.feat li{font-size:.9rem;color:var(--ink-2);padding:6px 0 6px 24px;position:relative}
+.feat li::before{content:"";position:absolute;left:0;top:12px;width:12px;height:12px;border:2px solid var(--gold);border-radius:3px}
+@media(max-width:860px){.feat-grid{grid-template-columns:1fr}}
+
+/* ─── BIG NUMBER / DOUBLE ENTRY ─── */
+.spot{background:linear-gradient(135deg,var(--blueprint),var(--ink));color:var(--paper);border-radius:22px;padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;position:relative;overflow:hidden}
+.spot::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:30px 30px;opacity:.6}
+.spot>div{position:relative;z-index:2}
+.spot h2{font-size:2.3rem;color:#fff;margin-bottom:14px}
+.spot p{color:var(--steel-l);font-size:1.05rem;margin-bottom:10px}
+.spot-demo{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:24px}
+.demo-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:.95rem}
+.demo-row:last-child{border-bottom:none}
+.demo-row .lbl{color:var(--steel-l);display:flex;align-items:center;gap:10px}
+.demo-row .amt{font-family:'Barlow Semi Condensed';font-weight:800;font-size:1.05rem}
+.amt.out{color:#F0A8A8}.amt.in{color:#8FE0BC}
+.demo-tag{font-size:.72rem;background:var(--gold);color:var(--ink);padding:3px 10px;border-radius:20px;font-weight:800;font-family:'Barlow Semi Condensed'}
+@media(max-width:780px){.spot{grid-template-columns:1fr;padding:36px 26px;gap:30px}.spot h2{font-size:1.9rem}}
+
+/* ─── CLIENT PORTAL ─── */
+.portal{background:var(--concrete);border-radius:22px;padding:56px;display:grid;grid-template-columns:1fr .82fr;gap:44px;align-items:center;position:relative;overflow:hidden}
+.portal-copy .eyebrow{color:var(--gold-d)}
+.portal-copy h2{font-size:2.3rem;margin:14px 0 16px;color:var(--ink)}
+.portal-copy p{color:var(--steel);font-size:1.06rem;margin-bottom:18px;max-width:30em}
+.portal-list{list-style:none}
+.portal-list li{display:flex;align-items:flex-start;gap:12px;padding:9px 0;font-size:.98rem;color:var(--ink-2)}
+.portal-list .ck{color:var(--ok);font-weight:800;flex-shrink:0;margin-top:1px}
+.portal-secure{margin-top:20px;background:var(--w);border:1px solid var(--line);border-radius:11px;padding:14px 16px;font-size:.9rem;color:var(--ink-2);display:flex;gap:11px;align-items:flex-start}
+.portal-secure b{color:var(--gold-d)}
+/* phone */
+.phone{width:270px;margin:0 auto;background:var(--ink);border-radius:34px;padding:11px;box-shadow:0 24px 60px rgba(15,34,55,.28);position:relative}
+.phone::before{content:"";position:absolute;top:22px;left:50%;transform:translateX(-50%);width:56px;height:5px;background:rgba(255,255,255,.2);border-radius:10px;z-index:5}
+.phone-screen{background:var(--paper);border-radius:25px;overflow:hidden;aspect-ratio:9/18.5}
+.ph-top{background:linear-gradient(150deg,var(--ink),#26405A);color:#fff;padding:36px 18px 20px}
+.ph-brand{font-size:.6rem;letter-spacing:.14em;color:var(--gold-l);font-weight:700;margin-bottom:9px}
+.ph-name{font-size:1.05rem;font-weight:900;line-height:1.2}
+.ph-meta{font-size:.66rem;color:rgba(255,255,255,.6);margin-top:4px}
+.ph-pill{display:inline-flex;gap:5px;margin-top:11px;padding:4px 11px;border-radius:20px;font-size:.66rem;font-weight:800;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2)}
+.ph-body{padding:14px}
+.ph-card{background:var(--w);border:1px solid var(--line);border-radius:11px;padding:13px;margin-bottom:11px}
+.ph-ct{font-size:.56rem;font-weight:900;letter-spacing:.08em;color:var(--steel-l);margin-bottom:9px}
+.ph-pct{font-size:1.7rem;font-weight:900;color:var(--gold-d);line-height:1}
+.ph-bar{height:7px;background:var(--concrete);border-radius:10px;margin-top:8px;overflow:hidden}
+.ph-fill{height:100%;width:65%;background:linear-gradient(90deg,var(--gold-l),var(--gold));border-radius:10px}
+.ph-step{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:.7rem}
+.ph-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ph-dot.done{background:var(--ok)}.ph-dot.now{background:var(--gold);box-shadow:0 0 0 3px rgba(200,164,74,.25)}.ph-dot.wait{background:var(--concrete)}
+.ph-pay{display:flex;justify-content:space-between;font-size:.7rem;padding:4px 0}
+.ph-pay .a{font-weight:800;color:var(--ok);font-family:'Barlow Semi Condensed'}
+@media(max-width:820px){
+  .portal{grid-template-columns:1fr;padding:38px 26px;gap:36px}
+  .portal-copy h2{font-size:1.9rem}
+  .phone{width:240px}
+}
+
+/* ─── PRICING ─── */
+.price-wrap{max-width:520px;margin:0 auto}
+.price-card{background:var(--ink);color:#fff;border-radius:24px;padding:48px 40px;text-align:center;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(15,34,55,.22)}
+.price-card::before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000,transparent);-webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000,transparent)}
+.price-card>*{position:relative;z-index:2}
+.price-badge{display:inline-block;background:var(--gold);color:var(--ink);font-family:'Barlow Semi Condensed';font-weight:800;font-size:.78rem;letter-spacing:.08em;padding:6px 16px;border-radius:20px;margin-bottom:22px}
+.price-num{display:flex;align-items:baseline;justify-content:center;gap:6px;margin-bottom:6px}
+.price-num .cur{font-family:'Barlow Semi Condensed';font-weight:700;font-size:1.3rem;color:var(--gold-l);align-self:flex-start;margin-top:10px}
+.price-num .num{font-family:'Barlow Semi Condensed';font-weight:800;font-size:4.6rem;line-height:1;color:#fff}
+.price-num .per{font-size:1.05rem;color:var(--steel-l);align-self:flex-end;margin-bottom:12px}
+.price-sub{color:var(--steel-l);font-size:.95rem;margin-bottom:30px}
+.price-divider{height:1px;background:rgba(255,255,255,.12);margin:0 0 26px}
+.price-list{list-style:none;text-align:left;max-width:340px;margin:0 auto 30px}
+.price-list li{display:flex;align-items:flex-start;gap:11px;padding:9px 0;font-size:.95rem;color:#EDEBE4}
+.price-list .ck{color:var(--gold-l);font-weight:800;flex-shrink:0;margin-top:1px}
+.price-cta{display:block;background:var(--gold);color:var(--ink);padding:16px;border-radius:11px;font-weight:800;font-size:1.08rem;font-family:'Barlow Semi Condensed';letter-spacing:.02em;margin-bottom:14px;transition:transform .15s,box-shadow .2s}
+.price-cta:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(200,164,74,.32)}
+.price-fine{font-size:.8rem;color:var(--steel-l)}
+.price-compare-note{text-align:center;margin-top:22px;font-size:.9rem;color:var(--steel)}
+.price-compare-note b{color:var(--ink)}
+@media(max-width:560px){.price-card{padding:38px 24px}.price-num .num{font-size:3.6rem}}
+
+/* ─── FAQ ─── */
+.faq-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+.faq-item{background:var(--w);border:1px solid var(--line);border-radius:14px;overflow:hidden;transition:border-color .2s}
+.faq-item[open]{border-color:var(--gold-l)}
+.faq-item summary{list-style:none;cursor:pointer;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-weight:700;font-size:1rem;color:var(--ink)}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-arrow{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--concrete);display:flex;align-items:center;justify-content:center;font-size:.8rem;color:var(--steel);transition:transform .25s,background .2s}
+.faq-item[open] .faq-arrow{transform:rotate(45deg);background:var(--gold);color:#fff}
+.faq-a{padding:0 22px 20px 22px;color:var(--steel);font-size:.94rem;line-height:1.7}
+.faq-a b{color:var(--ink-2)}
+
+/* ─── COMPARISON ─── */
+.cmp{max-width:720px;margin:0 auto}
+.cmp-table{background:var(--w);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.cmp-row{display:grid;grid-template-columns:1.4fr 1fr 1fr;align-items:center}
+.cmp-row+.cmp-row{border-top:1px solid var(--line)}
+.cmp-row>div{padding:16px 20px}
+.cmp-head{background:var(--ink);color:#fff}
+.cmp-head>div{font-family:'Barlow Semi Condensed';font-weight:700;font-size:.98rem}
+.cmp-head .us{color:var(--gold-l);text-align:center}
+.cmp-head .them{color:var(--steel-l);text-align:center}
+.cmp-feat{font-weight:500;color:var(--ink-2);font-size:.95rem}
+.cmp-us,.cmp-them{text-align:center;font-family:'Barlow Semi Condensed';font-weight:700}
+.cmp-us{color:var(--ok)}.cmp-them{color:var(--steel-l)}
+.cmp-us .x{color:var(--ok)}
+@media(max-width:560px){.cmp-row{grid-template-columns:1.3fr .7fr .7fr}.cmp-row>div{padding:13px 12px;font-size:.85rem}}
+
+/* ─── CTA ─── */
+.final{background:var(--gold);color:var(--ink);text-align:center;padding:90px 0}
+.final h2{font-size:clamp(2.1rem,4.4vw,3.2rem);margin-bottom:16px}
+.final p{font-size:1.18rem;color:var(--ink-2);max-width:32em;margin:0 auto 34px}
+.btn-ink{background:var(--ink);color:var(--paper);padding:17px 40px;border-radius:10px;font-weight:800;font-size:1.1rem;font-family:'Barlow Semi Condensed';letter-spacing:.02em;display:inline-block;transition:transform .15s,box-shadow .2s;box-shadow:0 8px 28px rgba(15,34,55,.25)}
+.btn-ink:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(15,34,55,.35)}
+.final small{display:block;margin-top:18px;color:var(--gold-d);font-weight:600;font-size:.9rem}
+
+/* ─── FOOTER ─── */
+footer{background:var(--ink);color:var(--steel-l);padding:50px 0 40px}
+.foot-in{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.foot-in .logo{color:#fff}
+.foot-links{display:flex;gap:26px;font-size:.9rem}
+.foot-links a:hover{color:var(--gold-l)}
+.foot-copy{font-size:.82rem;color:var(--steel);margin-top:24px;padding-top:24px;border-top:1px solid rgba(255,255,255,.08)}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.6,.2,1),transform .7s cubic-bezier(.2,.6,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.bp-line,.bp-node-g{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-in">
+    <a href="#" class="logo"><span class="logo-mark"></span>案場通</a>
+    <div class="nav-links">
+      <a href="#pain">痛點</a>
+      <a href="#how">怎麼運作</a>
+      <a href="#features">功能</a>
+      <a href="#portal">業主端</a>
+      <a href="#pricing">收費</a>
+      <a href="#compare">為什麼選我們</a>
+      <a href="#faq">常見問題</a>
+      <a href="manual.html">操作手冊</a>
+      <a href="#start" class="nav-cta">免費試用</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <span class="eyebrow">給統包裝修 · 室內設計公司</span>
+      <h1 class="disp">一個案場，<br>從報價<span class="hl">管到收尾</span>。</h1>
+      <p class="lead">報價、合約、工班付款、帳款、施工進度——全部串在同一個案場裡。不用再開五個 Excel、翻十個 LINE 群組找一筆數字。</p>
+      <div class="hero-cta">
+        <a href="#start" class="btn-gold">免費試用 14 天</a>
+        <a href="#how" class="btn-ghost">看它怎麼運作 ↓</a>
+      </div>
+      <div class="hero-note"><b>✓</b> 一個價格 NT$1,280/月　<b>✓</b> 免費試用14天　<b>✓</b> 三分鐘上手</div>
+    </div>
+
+    <div class="blueprint">
+      <svg class="bp-svg" viewBox="0 0 400 400" role="img" aria-label="案場串聯示意圖：報價、合約、工班、帳款、進度全部連到同一個案場">
+        <!-- connection lines -->
+        <g class="bp-lines">
+          <path class="bp-line" d="M200,200 L200,64"/>
+          <path class="bp-line" d="M200,200 L330,130"/>
+          <path class="bp-line" d="M200,200 L330,270"/>
+          <path class="bp-line" d="M200,200 L200,336"/>
+          <path class="bp-line" d="M200,200 L70,270"/>
+          <path class="bp-line" d="M200,200 L70,130"/>
+        </g>
+        <!-- center -->
+        <circle class="bp-center" cx="200" cy="200" r="46"/>
+        <text class="bp-center-txt" x="200" y="196">案場</text>
+        <text class="bp-center-txt" x="200" y="214" style="font-size:11px;font-weight:600">CASE FILE</text>
+
+        <!-- nodes -->
+        <g class="bp-node-g" style="animation-delay:.1s"><rect class="bp-node" x="160" y="30" width="80" height="46" rx="9"/><text class="bp-label" x="200" y="52" text-anchor="middle">報價單</text><text class="bp-sub" x="200" y="66" text-anchor="middle">QUOTE</text></g>
+        <g class="bp-node-g" style="animation-delay:.2s"><rect class="bp-node" x="292" y="104" width="82" height="46" rx="9"/><text class="bp-label" x="333" y="126" text-anchor="middle">合約</text><text class="bp-sub" x="333" y="140" text-anchor="middle">CONTRACT</text></g>
+        <g class="bp-node-g" style="animation-delay:.3s"><rect class="bp-node" x="292" y="244" width="82" height="46" rx="9"/><text class="bp-label" x="333" y="266" text-anchor="middle">工班付款</text><text class="bp-sub" x="333" y="280" text-anchor="middle">PAYOUT</text></g>
+        <g class="bp-node-g" style="animation-delay:.4s"><rect class="bp-node" x="160" y="324" width="80" height="46" rx="9"/><text class="bp-label" x="200" y="346" text-anchor="middle">帳款</text><text class="bp-sub" x="200" y="360" text-anchor="middle">LEDGER</text></g>
+        <g class="bp-node-g" style="animation-delay:.5s"><rect class="bp-node" x="26" y="244" width="82" height="46" rx="9"/><text class="bp-label" x="67" y="266" text-anchor="middle">施工進度</text><text class="bp-sub" x="67" y="280" text-anchor="middle">PROGRESS</text></g>
+        <g class="bp-node-g" style="animation-delay:.6s"><rect class="bp-node" x="26" y="104" width="82" height="46" rx="9"/><text class="bp-label" x="67" y="126" text-anchor="middle">廠商比價</text><text class="bp-sub" x="67" y="140" text-anchor="middle">VENDORS</text></g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- TRUST STRIP -->
+<div class="strip">
+  <div class="wrap strip-in">
+    <span><span class="dot">◆</span> 專為台灣裝修業設計</span>
+    <span><span class="dot">◆</span> 內帳外帳分明</span>
+    <span><span class="dot">◆</span> 報價單一鍵出 A4</span>
+    <span><span class="dot">◆</span> 業主端進度查詢</span>
+  </div>
+</div>
+
+<!-- PAIN -->
+<section class="section" id="pain">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">你每天在忙的事</span>
+      <h2 class="disp">工地在跑，數字卻散在各處。</h2>
+      <p>統包裝修最累的不是施工，是「同一個案子」的資料分了五個地方，出事的時候一筆都對不起來。</p>
+    </div>
+
+    <div class="chaos-demo reveal">
+      <div class="chaos-toggle">
+        <button class="ct-btn on" data-state="chaos">😵 現在的做法</button>
+        <button class="ct-btn" data-state="order">✅ 用案場通之後</button>
+      </div>
+      <div class="chaos-stage">
+        <div class="chaos-view show" id="chaosView">
+          <div class="chip c1">📗 Excel<br><span>報價.xlsx</span></div>
+          <div class="chip c2">💬 LINE<br><span>翻兩百則對話</span></div>
+          <div class="chip c3">🧾 紙本<br><span>廠商估價單</span></div>
+          <div class="chip c4">📓 記事本<br><span>誰付了多少？</span></div>
+          <div class="chip c5">📷 照片<br><span>合約掃描檔</span></div>
+          <div class="chip c6">❓<br><span>這案到底賺多少</span></div>
+        </div>
+        <div class="order-view" id="orderView">
+          <div class="order-card">
+            <div class="order-card-hd">🏗️ 林小姐・大安區翻新</div>
+            <div class="order-row"><span>📋 報價單</span><b>已完成</b></div>
+            <div class="order-row"><span>📝 合約</span><b>已簽署</b></div>
+            <div class="order-row"><span>🏗️ 廠商報價</span><b>3 家比價中</b></div>
+            <div class="order-row"><span>💰 已收款</span><b class="ok">NT$120,000</b></div>
+            <div class="order-row"><span>📊 目前毛利</span><b class="ok">NT$52,000</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pain-grid">
+      <div class="pain reveal">
+        <span class="pain-ico">📗</span>
+        <h3>報價、合約、帳款各開一個檔</h3>
+        <p>報價用一個 Excel、合約掃描丟資料夾、收款記在記事本。要查「這個案子到底賺多少」得翻三個地方湊。</p>
+        <span class="old">現在：五個 Excel + 一疊紙</span>
+      </div>
+      <div class="pain reveal">
+        <span class="pain-ico">💸</span>
+        <h3>工班付款算不清</h3>
+        <p>水電付了三成、木作付了一半、泥作還沒付。哪一筆付到哪、還欠多少，全靠腦袋記，月底一定漏。</p>
+        <span class="old">現在：LINE 往上滑找對話</span>
+      </div>
+      <div class="pain reveal">
+        <span class="pain-ico">🧾</span>
+        <h3>內帳外帳混在一起</h3>
+        <p>給業主看的報價、給自己看的成本，兩本帳混著記。報稅、對帳、算毛利的時候整個人打結。</p>
+        <span class="old">現在：同一張表兩種價</span>
+      </div>
+      <div class="pain reveal">
+        <span class="pain-ico">📵</span>
+        <h3>業主一直問「做到哪了」</h3>
+        <p>每個業主都想知道進度、想確認錢付了什麼。你一天回十次 LINE，還是被嫌不夠透明。</p>
+        <span class="old">現在：一天回十通訊息</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION FLOW -->
+<section class="section sol" id="how">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">怎麼運作</span>
+      <h2 class="disp">直接看畫面怎麼動。</h2>
+      <p>從業主上門到工程結案，每一步的資料都留在同一個案場裡。點下面的步驟，看實際畫面長什麼樣子。</p>
+    </div>
+
+    <div class="demo-shell reveal">
+      <div class="demo-bar">
+        <span class="db-dot r"></span><span class="db-dot y"></span><span class="db-dot g"></span>
+        <span class="db-url">omnight.netlify.app</span>
+      </div>
+      <div class="demo-screen">
+
+        <div class="demo-panel active" data-panel="1">
+          <div class="dp-label">STEP 01 · 登入</div>
+          <div class="dp-login">
+            <div class="dp-role-row">
+              <div class="dp-role">👑 老闆</div>
+              <div class="dp-role sel">👤 員工</div>
+              <div class="dp-role">🕐 公務</div>
+            </div>
+            <div class="dp-pw"><span class="dp-dot"></span><span class="dp-dot"></span><span class="dp-dot"></span><span class="dp-dot"></span></div>
+            <div class="dp-ok">✓ 登入成功，直接看到今日總覽</div>
+          </div>
+        </div>
+
+        <div class="demo-panel" data-panel="2">
+          <div class="dp-label">STEP 02 · 建立案場</div>
+          <div class="dp-form">
+            <div class="dp-field"><b>案場名稱</b>林小姐・大安區翻新</div>
+            <div class="dp-field"><b>工程類型</b>全室翻新</div>
+            <div class="dp-field"><b>狀態</b>💬 詢價中</div>
+            <div class="dp-card-in">🏗️ 案場已建立，報價、合約、帳款都會歸在這裡</div>
+          </div>
+        </div>
+
+        <div class="demo-panel" data-panel="3">
+          <div class="dp-label">STEP 03 · 報價與合約</div>
+          <div class="dp-quote-list">
+            <div class="dp-qi"><span>拆除工程</span><span>NT$38,000</span></div>
+            <div class="dp-qi"><span>水電工程</span><span>NT$65,000</span></div>
+            <div class="dp-qi"><span>木作工程</span><span>NT$142,000</span></div>
+            <div class="dp-qtotal"><span>總價（含稅）</span><b>NT$258,300</b></div>
+          </div>
+        </div>
+
+        <div class="demo-panel" data-panel="4">
+          <div class="dp-label">STEP 04 · 廠商付款</div>
+          <div class="dp-pay-card">
+            <div class="dp-pay-top"><span>💳 大同水電</span><span>NT$30,000</span></div>
+            <div class="dp-pay-bar"><div class="dp-pay-fill"></div></div>
+            <div class="dp-pay-note">付 3 成・尚欠 NT$70,000</div>
+            <div class="dp-ledger-sync">✓ 已自動記入內帳支出</div>
+          </div>
+        </div>
+
+        <div class="demo-panel" data-panel="5">
+          <div class="dp-label">STEP 05 · 現場記帳</div>
+          <div class="dp-qb-row">
+            <div class="dp-qb-btn">🧱<span>材料費</span></div>
+            <div class="dp-qb-btn">👷<span>工資</span></div>
+            <div class="dp-qb-btn">📦<span>雜項</span></div>
+            <div class="dp-qb-btn">⛽<span>油錢</span></div>
+          </div>
+          <div class="dp-qb-result"><span>材料費・木料</span><b>− NT$4,200</b></div>
+        </div>
+
+        <div class="demo-panel" data-panel="6">
+          <div class="dp-label">STEP 06 · 分享給業主</div>
+          <div class="dp-share">
+            <div class="dp-qr"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="dp-share-info">
+              <div class="t">📱 業主掃碼即可查看</div>
+              <div style="font-size:.78rem;color:var(--steel)">工程進度 65%</div>
+              <div class="dp-share-bar"><div class="dp-share-fill"></div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div class="demo-progress"><div class="demo-progress-fill" id="demoProgressFill"></div></div>
+      <div class="demo-nav" id="demoNav">
+        <button class="dn-btn on" data-step="1"><span class="dn-n">01</span><span class="dn-t">登入</span></button>
+        <button class="dn-btn" data-step="2"><span class="dn-n">02</span><span class="dn-t">建立案場</span></button>
+        <button class="dn-btn" data-step="3"><span class="dn-n">03</span><span class="dn-t">報價合約</span></button>
+        <button class="dn-btn" data-step="4"><span class="dn-n">04</span><span class="dn-t">廠商付款</span></button>
+        <button class="dn-btn" data-step="5"><span class="dn-n">05</span><span class="dn-t">現場記帳</span></button>
+        <button class="dn-btn" data-step="6"><span class="dn-n">06</span><span class="dn-t">分享業主</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">核心功能</span>
+      <h2 class="disp">為裝修業真正需要的事而做。</h2>
+      <p>不是套用通用 ERP，是把工地現場的流程一項一項拆開來設計。</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat reveal">
+        <span class="feat-tag">CASE FILE</span>
+        <h3>以案場為核心</h3>
+        <p>點進一個案子，它的所有東西都在這。不用在五個頁面之間切來切去。</p>
+        <ul><li>報價、合約、帳款全部歸檔</li><li>這案賺多少即時算給你看</li><li>案場狀態一目了然</li></ul>
+      </div>
+      <div class="feat reveal">
+        <span class="feat-tag">PAYOUT</span>
+        <h3>工班付款追蹤</h3>
+        <p>每個廠商付到哪、還欠多少，卡片上直接標。付款當下自動記進內帳。</p>
+        <ul><li>三成／五成／付清一鍵帶入</li><li>分期付款完整留紀錄</li><li>付款自動記帳，不用輸兩次</li></ul>
+      </div>
+      <div class="feat reveal">
+        <span class="feat-tag">LEDGER</span>
+        <h3>內外帳分明</h3>
+        <p>外帳（客戶收款）跟內帳（工程成本）各自清楚，毛利、毛利率自動算。</p>
+        <ul><li>月度總表看每月損益</li><li>案場分析看每案毛利</li><li>應收、應付一鍵盤點</li></ul>
+      </div>
+      <div class="feat reveal">
+        <span class="feat-tag">QUOTE</span>
+        <h3>報價一鍵出 A4</h3>
+        <p>線上填報價，直接輸出剛好塞滿 A4 的正式報價單，印出來就能給業主。</p>
+        <ul><li>工程分類、細項清楚列出</li><li>自動算稅、算總價</li><li>存成公版，下次直接改</li></ul>
+      </div>
+      <div class="feat reveal">
+        <span class="feat-tag">FIELD</span>
+        <h3>現場快速記帳</h3>
+        <p>買材料、發工資、加油——工地現場點一下，三秒記一筆，掛到對的案場。</p>
+        <ul><li>材料費、工資、雜項、油錢</li><li>手機就能記，不用回辦公室</li><li>自動歸到當天的案場</li></ul>
+      </div>
+      <div class="feat reveal">
+        <span class="feat-tag">TEAM</span>
+        <h3>員工打卡與薪資</h3>
+        <p>員工用自己的帳號打卡，選今天在哪個案場。出勤天數自動帶進薪資表。</p>
+        <ul><li>GPS 定位打卡</li><li>打卡連結案場，算得出工時成本</li><li>薪資、勞健保自動計算</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPOTLIGHT: DOUBLE ENTRY -->
+<section class="section" style="padding-top:0">
+  <div class="wrap">
+    <div class="spot reveal">
+      <div>
+        <span class="eyebrow" style="color:var(--gold-l)">一個動作，兩件事做完</span>
+        <h2 class="disp">付一次款，帳自動記好。</h2>
+        <p>這是國際級 ERP 的核心邏輯：付錢給工班的同時，內帳的成本自動記上去。</p>
+        <p>你不用再「付完款、再去記一筆帳」——一個動作，「還欠廠商多少」跟「這案花了多少」同時更新。</p>
+      </div>
+      <div class="spot-demo">
+        <div class="demo-row"><span class="lbl">💳 付款給 大同水電</span><span class="amt out">− NT$30,000</span></div>
+        <div class="demo-row"><span class="lbl" style="padding-left:26px;font-size:.82rem">↳ 自動記入內帳成本</span><span class="demo-tag">已同步</span></div>
+        <div class="demo-row"><span class="lbl">📊 大安區案 · 累計成本</span><span class="amt out">NT$68,000</span></div>
+        <div class="demo-row"><span class="lbl">💰 大安區案 · 已收款</span><span class="amt in">NT$120,000</span></div>
+        <div class="demo-row"><span class="lbl" style="color:#fff;font-weight:700">= 這案目前毛利</span><span class="amt in">NT$52,000</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENT PORTAL -->
+<section class="section" style="padding-top:0" id="portal">
+  <div class="wrap">
+    <div class="portal reveal">
+      <div class="portal-copy">
+        <span class="eyebrow">給業主的一頁</span>
+        <h2 class="disp">業主自己看進度，<br>你少回一半訊息。</h2>
+        <p>每個案場產生一個專屬連結或 QR Code。業主掃一下，不用下載、不用註冊，就能看到自己案子的進度、收款紀錄和合約。</p>
+        <ul class="portal-list">
+          <li><span class="ck">✓</span> 施工進度時間軸，做到哪一步一目了然</li>
+          <li><span class="ck">✓</span> 每一筆收款清楚列出，付了什麼不再解釋</li>
+          <li><span class="ck">✓</span> 合約隨時可查，透明建立信任</li>
+          <li><span class="ck">✓</span> 你更新，業主重整就看到最新的</li>
+        </ul>
+        <div class="portal-secure">
+          <span>🔒</span>
+          <div><b>成本完全保密。</b>業主只看得到自己付的款和進度，你的工程成本、工班費用、每案毛利，他一毛都看不到。</div>
+        </div>
+      </div>
+
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="ph-top">
+            <div class="ph-brand">工程進度查詢</div>
+            <div class="ph-name">大安區 · 林宅翻新</div>
+            <div class="ph-meta">👤 林小姐　📍 仁愛路三段</div>
+            <div class="ph-pill">🔨 施工中</div>
+          </div>
+          <div class="ph-body">
+            <div class="ph-card">
+              <div class="ph-ct">工程進度</div>
+              <div class="ph-pct">65%</div>
+              <div class="ph-bar"><div class="ph-fill"></div></div>
+            </div>
+            <div class="ph-card">
+              <div class="ph-ct">施工里程碑</div>
+              <div class="ph-step"><span class="ph-dot done"></span>簽約完成</div>
+              <div class="ph-step"><span class="ph-dot done"></span>拆除工程</div>
+              <div class="ph-step"><span class="ph-dot now"></span>水電配管中</div>
+              <div class="ph-step" style="color:var(--steel-l)"><span class="ph-dot wait"></span>木作進場</div>
+            </div>
+            <div class="ph-card" style="margin-bottom:0">
+              <div class="ph-ct">收款紀錄</div>
+              <div class="ph-pay"><span>訂金</span><span class="a">NT$60,000</span></div>
+              <div class="ph-pay"><span>第一期工程款</span><span class="a">NT$60,000</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="section" id="compare" style="padding-top:0">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
+      <span class="eyebrow">為什麼不用現成工具就好</span>
+      <h2 class="disp">通用工具做得到，但做不順。</h2>
+    </div>
+    <div class="cmp reveal">
+      <div class="cmp-table">
+        <div class="cmp-row cmp-head">
+          <div>做這件事時</div>
+          <div class="us">案場通</div>
+          <div class="them">Excel / 通用軟體</div>
+        </div>
+        <div class="cmp-row"><div class="cmp-feat">查一個案子賺多少</div><div class="cmp-us">一眼看到</div><div class="cmp-them">翻三個檔案湊</div></div>
+        <div class="cmp-row"><div class="cmp-feat">工班分期付款追蹤</div><div class="cmp-us">卡片直接標</div><div class="cmp-them">靠記憶／LINE</div></div>
+        <div class="cmp-row"><div class="cmp-feat">付款自動記帳</div><div class="cmp-us">一次搞定</div><div class="cmp-them">要記兩次</div></div>
+        <div class="cmp-row"><div class="cmp-feat">內外帳分開算毛利</div><div class="cmp-us">自動</div><div class="cmp-them">自己拉公式</div></div>
+        <div class="cmp-row"><div class="cmp-feat">出正式報價單</div><div class="cmp-us">一鍵印 A4</div><div class="cmp-them">手動排版</div></div>
+        <div class="cmp-row"><div class="cmp-feat">現場手機記帳</div><div class="cmp-us">三秒一筆</div><div class="cmp-them">回辦公室補</div></div>
+        <div class="cmp-row"><div class="cmp-feat">給業主看進度</div><div class="cmp-us">專屬連結</div><div class="cmp-them">一直回 LINE</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
+      <span class="eyebrow">收費方式</span>
+      <h2 class="disp">一個價格，全部都有。</h2>
+      <p>不分方案、不鎖功能，你不用猜哪個按鈕要多付錢。</p>
+    </div>
+
+    <div class="price-wrap reveal">
+      <div class="price-card">
+        <span class="price-badge">全功能方案</span>
+        <div class="price-num"><span class="cur">NT$</span><span class="num">1,280</span><span class="per">/ 月</span></div>
+        <div class="price-sub">不到一個工人半天的工資</div>
+        <div class="price-divider"></div>
+        <ul class="price-list">
+          <li><span class="ck">✓</span> 案場無上限，報價、合約、帳款、廠商全部串聯</li>
+          <li><span class="ck">✓</span> 內外帳分明，月度總表、案場毛利自動算</li>
+          <li><span class="ck">✓</span> 工班分期付款追蹤，付款自動記帳</li>
+          <li><span class="ck">✓</span> 員工個人帳號、打卡、薪資系統</li>
+          <li><span class="ck">✓</span> 業主端 QR Code 進度查詢頁</li>
+          <li><span class="ck">✓</span> 現場快速記帳、報價單一鍵出 A4</li>
+          <li><span class="ck">✓</span> AI 報價辨識、AI 對帳助理</li>
+        </ul>
+        <a href="signup.html" class="price-cta">免費試用 14 天 →</a>
+        <div class="price-fine">不用信用卡・隨時可以取消・資料隨時可匯出</div>
+      </div>
+    </div>
+
+    <p class="price-compare-note reveal">同類型國外系統 <b>Buildertrend</b> 每月要價 US$339 起（約 NT$10,600）。<br>我們只做台灣統包公司真正需要的功能，價格也只收合理的一小部分。</p>
+    <p class="price-compare-note reveal" style="margin-top:10px">還有其他問題？<a href="#faq" style="color:var(--gold-d);font-weight:700;text-decoration:underline">看常見問題 →</a></p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq" style="background:var(--concrete);padding-top:70px">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-left:auto;margin-right:auto;text-align:center">
+      <span class="eyebrow">常見問題</span>
+      <h2 class="disp">大家最常問的事</h2>
+      <p>點題目就能展開答案。</p>
+    </div>
+    <div class="faq-list">
+      <details class="faq-item reveal">
+        <summary>需要安裝什麼軟體嗎？<span class="faq-arrow">+</span></summary>
+        <div class="faq-a">不用安裝。打開瀏覽器輸入網址就能用，手機、平板、電腦都可以，跟你平常滑手機看網頁一樣簡單。</div>
+      </details>
+      <details class="faq-item reveal">
+        <summary>不太會用電腦，學得會嗎？<span class="faq-arrow">+</span></summary>
+        <div class="faq-a">會。介面跟你原本記帳、填報價單的習慣一樣，大按鈕、清楚的中文說明。上面「怎麼運作」的六個步驟做一次，大部分人 10 分鐘內就能上手。</div>
+      </details>
+      <details class="faq-item reveal">
+        <summary>費用怎麼算？有沒有隱藏費用？<span class="faq-arrow">+</span></summary>
+        <div class="faq-a">一個月 <b>NT$1,280</b>，全部功能都包含在裡面，沒有另外收費的進階功能，也不會依人數、案場數量另外加價。</div>
+      </details>
+      <details class="faq-item reveal">
+        <summary>免費試用期結束後會自動扣款嗎？<span class="faq-arrow">+</span></summary>
+        <div class="faq-a">不會。14 天試用不需要輸入信用卡資料，時間到了不會自動扣款，你確認要繼續用才需要付費開通。</div>
+      </details>
+      <details class="faq-item reveal">
+        <summary>資料存在哪裡？安全嗎？<span class="faq-arrow">+</span></summary>
+        <div class="faq-a">資料存在雲端資料庫，即時自動備份，不會因為手機壞掉、電腦當機而遺失。只有你和你設定的員工帳號才能登入查看。</div>
+      </details>
+      <details class="faq-item reveal">
+        <summary>業主看得到我的成本、利潤嗎？<span class="faq-arrow">+</span></summary>
+        <div class="faq-a">看不到。分享給業主的頁面只顯示施工進度、業主自己付的款項、合約內容，你的工程成本、廠商費用、每個案子賺多少，業主完全看不到。</div>
+      </details>
+      <details class="faq-item reveal">
+        <summary>舊的 Excel 資料可以搬過來嗎？<span class="faq-arrow">+</span></summary>
+        <div class="faq-a">可以，開始使用前我們會協助你把既有的案場、報價、帳款資料整理搬進系統，不用從零開始輸入。</div>
+      </details>
+      <details class="faq-item reveal">
+        <summary>可以隨時取消嗎？<span class="faq-arrow">+</span></summary>
+        <div class="faq-a">可以，沒有綁約期限，隨時可以取消，不會有違約金。取消後你原本的資料還是可以匯出保留。</div>
+      </details>
+    </div>
+    <p style="text-align:center;margin-top:26px;font-size:.9rem;color:var(--steel)">想看更完整的功能說明？<a href="manual.html" style="color:var(--gold-d);font-weight:700;text-decoration:underline">查看完整操作手冊 →</a></p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="start">
+  <div class="wrap">
+    <h2 class="disp">別再讓數字散在五個地方。</h2>
+    <p>把你手上一個真實案子搬進來試試看。從報價到結案，感受一次「全部串在一起」是什麼感覺。</p>
+    <a href="signup.html" class="btn-ink">免費試用 14 天 →</a>
+    <small>NT$1,280／月・不用信用卡・隨時可以取消</small>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <a href="#" class="logo"><span class="logo-mark"></span>案場通</a>
+      <div class="foot-links">
+        <a href="#pain">痛點</a>
+        <a href="#how">怎麼運作</a>
+        <a href="#features">功能</a>
+        <a href="#start">預約試用</a>
+      </div>
+    </div>
+    <div class="foot-copy">案場通 AnCase · 專為統包裝修與室內設計公司打造的後台系統。© 2026</div>
+  </div>
+</footer>
+
+<script>
+// scroll reveal
+const io=new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:.14});
+document.querySelectorAll('.reveal').forEach((el,i)=>{
+  el.style.transitionDelay=(i%4*60)+'ms';
+  io.observe(el);
+});
+
+// ── chaos / order toggle ──
+const ctBtns=document.querySelectorAll('.ct-btn');
+const chaosView=document.getElementById('chaosView');
+const orderView=document.getElementById('orderView');
+ctBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    ctBtns.forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    const state=btn.dataset.state;
+    chaosView.classList.toggle('show',state==='chaos');
+    orderView.classList.toggle('show',state==='order');
+  });
+});
+// auto-flip once after entering view, to hint interactivity
+const chaosIO=new IntersectionObserver((es)=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      chaosIO.disconnect();
+      setTimeout(()=>{
+        document.querySelector('.ct-btn[data-state="order"]')?.click();
+        setTimeout(()=>{document.querySelector('.ct-btn[data-state="chaos"]')?.click();},2600);
+      },1800);
+    }
+  });
+},{threshold:.5});
+const chaosStage=document.querySelector('.chaos-stage');
+if(chaosStage)chaosIO.observe(chaosStage);
+
+// ── animated interface demo carousel ──
+const demoPanels=document.querySelectorAll('.demo-panel');
+const demoNavBtns=document.querySelectorAll('.dn-btn');
+const demoFill=document.getElementById('demoProgressFill');
+const DEMO_DURATION=3600;
+let demoStep=1, demoTimer=null, demoAnimStart=null, demoRAF=null;
+
+function goToDemoStep(n){
+  demoStep=n;
+  demoPanels.forEach(p=>p.classList.toggle('active',p.dataset.panel==String(n)));
+  demoNavBtns.forEach(b=>b.classList.toggle('on',b.dataset.step==String(n)));
+  restartDemoProgress();
+}
+function restartDemoProgress(){
+  if(demoRAF)cancelAnimationFrame(demoRAF);
+  demoFill.style.transition='none';
+  demoFill.style.width='0%';
+  requestAnimationFrame(()=>{
+    demoFill.style.transition='width '+DEMO_DURATION+'ms linear';
+    requestAnimationFrame(()=>{demoFill.style.width='100%';});
+  });
+}
+function advanceDemo(){
+  const next=demoStep>=demoPanels.length?1:demoStep+1;
+  goToDemoStep(next);
+}
+function startDemoAutoplay(){
+  stopDemoAutoplay();
+  demoTimer=setInterval(advanceDemo,DEMO_DURATION);
+}
+function stopDemoAutoplay(){
+  if(demoTimer)clearInterval(demoTimer);
+}
+demoNavBtns.forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    goToDemoStep(parseInt(btn.dataset.step));
+    startDemoAutoplay(); // resume autoplay from the manually chosen step
+  });
+});
+// start autoplay once the demo scrolls into view
+const demoShell=document.querySelector('.demo-shell');
+const demoIO=new IntersectionObserver((es)=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      goToDemoStep(1);
+      startDemoAutoplay();
+    }else{
+      stopDemoAutoplay();
+    }
+  });
+},{threshold:.35});
+if(demoShell)demoIO.observe(demoShell);
+
+// ── FAQ: only one open at a time ──
+document.querySelectorAll('.faq-item').forEach(it=>{
+  it.addEventListener('toggle',()=>{
+    if(it.open){
+      document.querySelectorAll('.faq-item').forEach(o=>{if(o!==it)o.open=false;});
+    }
+  });
+});
+</script>
+</body>
+</html>
